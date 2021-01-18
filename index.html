@@ -170,12 +170,19 @@
 
 <p>用npm安装hexo, </p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli # 注意在Blog文件夹中输入，安装后输入hexo -v报错：Cannot find module &#x27;hexo&#x27; from &#x27;&#x27;的话使用下面这条命令</span><br><span class="line">npm install hexo-util --save # 上面安装没报错的话不用这条命令</span><br></pre></td></tr></table></figure>
-<p>注意：我这里报错提示：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37267302/article/details/107901345">系统禁止运行脚本</a>，如果你没有的话继续</p>
+<p>注意：我这里报错提示：系统禁止运行脚本，如果你没有的话跳过这步</p>
+<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180357726.png" alt="image-20210118180357726" style="zoom:50%;">
+
+<p>然后点击左边的开发者选择，右边下滑找到PowerShell，勾选允许本地运行PowerShell脚本，点击应用，然后把输入界面重新打开一下，让设置生效就行了</p>
+<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180450626.png" alt="image-20210118180450626" style="zoom:50%;">
+
+
+
 <p>好了后就可以初始化我们的博客了</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
 <p>好了以后就可以启动hexo服务了</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g #生产静态页面，默认是4000端口，如果被占可以指定，如：hexo server -p 5000</span><br><span class="line">hexo s #本地启动hexo服务</span><br></pre></td></tr></table></figure>
-<p>然后在网址上输入localhost:4000（端口号如果改了的话这里也要改）就可以看到了自己的博客了</p>
+<p>然后在网址上输入localhost:4000（端口号如果改了的话这里也要改）就可以看到了自己的博客了，到这里博客在本地就搭建好了，但是只能现在这台电脑看的到，所以要用GitHub托管，让其他电脑也看的到</p>
 <h2 id="Github-管理博客"><a href="#Github-管理博客" class="headerlink" title="Github 管理博客"></a>Github 管理博客</h2><h4 id="项目上传GitHub"><a href="#项目上传GitHub" class="headerlink" title="项目上传GitHub"></a>项目上传GitHub</h4><p>​        GitHub主线用来放博客项目，用来以后换电脑后可以拉取项目直接写博客，不用重新在本地一点一点搭建，服务托管在分支</p>
 <p>打开Blog文件夹里面的_config.yml文件。翻到最后</p>
 <ol>
@@ -187,6 +194,9 @@
 <p>在Git Bash中下载git</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
 <p>安装好就把准备好的项目上传GitHub主线</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone &#x27;GitHub项目地址&#x27; # 复制GitHub项目到本地，本地会有个与GitHub项目名文件</span><br></pre></td></tr></table></figure>
+
+
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone &#x27;GitHub项目地址&#x27; # 复制GitHub项目到本地，本地会有个与GitHub项目名文件，把里面的文件剪切出来，放在博客项目中</span><br><span class="line">git add * # 新增文件放入提交缓存中</span><br><span class="line">git commit  -m  &quot;提交说明&quot; # 就是对这次提交的说明</span><br><span class="line">git push -u origin main # 本地项目提交到GitHub主线上，GitHub上会少几个文件，不要紧那几个才是必要的</span><br></pre></td></tr></table></figure>
 <p>好了之后里面会有个.git文件，这样就好了</p>
 <h4 id="GitHub托管博客"><a href="#GitHub托管博客" class="headerlink" title="GitHub托管博客"></a>GitHub托管博客</h4><p>可以推送到GitHub上了</p>
