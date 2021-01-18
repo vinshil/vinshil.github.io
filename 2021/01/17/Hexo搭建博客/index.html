@@ -28,7 +28,7 @@
 <meta property="og:image" content="http://example.com/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172021785.png">
 <meta property="og:image" content="http://example.com/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172312679.png">
 <meta property="article:published_time" content="2021-01-17T15:30:32.000Z">
-<meta property="article:modified_time" content="2021-01-18T10:17:41.172Z">
+<meta property="article:modified_time" content="2021-01-18T10:27:30.371Z">
 <meta property="article:author" content="vinshil">
 <meta property="article:tag" content="hexo">
 <meta name="twitter:card" content="summary">
@@ -125,10 +125,10 @@
 <p>生成ssh密钥连接本地和GitHub：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
 <p>然后打开在 C:\Users\Administrator.ssh 文件夹中的 id_rsa.pub，复制全部内容，登录GitHub，点击右上角人物头像点击settings设置界面，</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117033957541.png" alt="image-20210117033957541.png" style="zoom:67%;">
+<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117033957541.png" alt="image-20210117033957541.png" style="zoom:40%;">
 
 <p>然后选择SSH这个，再点击New SSH key加上密钥，写上这个密钥的说明，例如：家里的笔记本，台式电脑等，不然密钥多了你会不知道哪个是哪个，复制的内容贴在下面框里就好了，然后点击Add SSH key就好了。</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117034216610.png" alt="image-20210117034216610" style="zoom:67%;">
+<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117034216610.png" alt="image-20210117034216610" style="zoom:50%;">
 
 <p>在Git Bash中检查是否设置密钥成功, 输入<code>ssh git@github.com </code>，如下图就说明成功了。</p>
 <p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117034437859.png" alt="image-20210117034437859"></p>
@@ -144,10 +144,10 @@
 <p>用npm安装hexo, </p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli # 注意在Blog文件夹中输入，安装后输入hexo -v报错：Cannot find module &#x27;hexo&#x27; from &#x27;&#x27;的话使用下面这条命令</span><br><span class="line">npm install hexo-util --save # 上面安装没报错的话不用这条命令</span><br></pre></td></tr></table></figure>
 <p>注意：我这里报错提示：系统禁止运行脚本，如果你没有的话跳过这步</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180357726.png" alt="image-20210118180357726" style="zoom:50%;">
+<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180357726.png" alt="image-20210118180357726" style="zoom:40%;">
 
 <p>然后点击左边的开发者选择，右边下滑找到PowerShell，勾选允许本地运行PowerShell脚本，点击应用，然后把输入界面重新打开一下，让设置生效就行了</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180450626.png" alt="image-20210118180450626" style="zoom:50%;">
+<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180450626.png" alt="image-20210118180450626" style="zoom:40%;">
 
 
 
@@ -172,13 +172,15 @@
 
 <p>然后把搭建的博客项目上传到GitHub上去</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add * # 新增文件放入提交缓存中</span><br><span class="line">git commit  -m  &quot;提交说明&quot; # 就是对这次提交的说明</span><br><span class="line">git push -u origin main # 本地项目提交到GitHub主线上，GitHub上会少几个文件，不过不要紧</span><br></pre></td></tr></table></figure>
-<p>好了之后里面会有个.git文件，这样就好了</p>
+<p>好了之后GitHub上面就有项目了，以后换电脑就拉取项目直接写博客就行了</p>
 <h4 id="GitHub托管博客"><a href="#GitHub托管博客" class="headerlink" title="GitHub托管博客"></a>GitHub托管博客</h4><p>可以推送到GitHub上了</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d # 这是hexo g,hexo d的简写，改完东西后一定记得先g再 s或d</span><br></pre></td></tr></table></figure>
 <p>推送完在去GitHub项目中设置Pages功能，先登录GitHub，进去博客项目，点击右边的Settings</p>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172021785.png" alt="image-20210118172021785"></p>
+<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172021785.png" alt="image-20210118172021785" style="zoom:50%;">
+
 <p>下滑找到GitHub Pages，把branch设置成我们在_config.yml上写的分支名字。</p>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172312679.png" alt="image-20210118172312679"></p>
+<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172312679.png" alt="image-20210118172312679" style="zoom:50%;">
+
 <p>好了，打开你的 username.github.io 看看吧</p>
 <h4 id="hexo命令："><a href="#hexo命令：" class="headerlink" title="hexo命令："></a>hexo命令：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hexo n &quot;博客&quot; #新建博客文章，在Blog\source\_posts文件夹中</span><br><span class="line">hexo g # 生成静态页面</span><br><span class="line">hexo s # 本地启动hexo服务</span><br><span class="line">hexo d # 推送到GitHub</span><br><span class="line"></span><br><span class="line">hexo server -p 5000 # 指定端口</span><br><span class="line">hexo clean # 清理缓存，若是网页正常情况下可以忽略这条命令</span><br></pre></td></tr></table></figure>
 <h4 id="博客添加图片"><a href="#博客添加图片" class="headerlink" title="博客添加图片"></a>博客添加图片</h4><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/codehome/p/8428738.html">博客添加图片</a></p>
