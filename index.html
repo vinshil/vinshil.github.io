@@ -95,9 +95,25 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本来在windows上装了mysql，但是后来一想，真正项目的mysql都是运行的liunx系统中，所以就弄了个Ubuntu，毕竟win 10的Ubuntu很方便</p>
-<h2 id="安装准备"><a href="#安装准备" class="headerlink" title="安装准备"></a>安装准备</h2><h3 id="Ubuntu-版本"><a href="#Ubuntu-版本" class="headerlink" title="Ubuntu 版本"></a>Ubuntu 版本</h3><p>安装东西前看下Ubuntu版本，毕竟有些东西要看版本的</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a target="_blank" rel="noopener" href="https://yq.aliyun.com/go/articleRenderRedirect?url=https://www.mysql.com/">MySQL</a>是最流行的开源关系数据库管理系统。它速度快，容易使用，容易扩展，并且流行的<code>LAMP</code>和<code>LEMP</code>的一部分。安装电脑为Ubuntu 20.04</p>
+<h2 id="安装准备"><a href="#安装准备" class="headerlink" title="安装准备"></a>安装准备</h2><h4 id="Ubuntu-版本"><a href="#Ubuntu-版本" class="headerlink" title="Ubuntu 版本"></a>Ubuntu 版本</h4><p>安装东西前看下Ubuntu版本，毕竟有些东西要看看版本能不能兼容</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lsb_release -a</span><br></pre></td></tr></table></figure>
+<h2 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h2><p>开始安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update # 更新源</span><br><span class="line">sudo apt install mysql-server # 安装mysql-server</span><br></pre></td></tr></table></figure>
+<p>检查是否安装成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service mysql start</span><br></pre></td></tr></table></figure>
+<p>我这里报错了，如下，你没有报错的话可以跳过这里：</p>
+<p><img src="/2021/01/18/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210119175539464.png" alt="image-20210119175539464"></p>
+<p>提示我没有一个文件，最后用了<a target="_blank" rel="noopener" href="https://www.cnblogs.com/cnwcl/p/13805643.html">汪成龙老师</a>，解决方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo service mysql stop</span><br><span class="line">sudo usermod -d /var/lib/mysql/ mysql</span><br><span class="line">sudo service mysql start</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h2><p>查看安装的mysql：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg --list|grep mysql</span><br></pre></td></tr></table></figure>
+<p>删除mysql：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get remove mysql-*</span><br></pre></td></tr></table></figure>
+<p>清理残留数据：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg -l |grep ^rc|awk &#x27;&#123;print $2&#125;&#x27; |sudo xargs dpkg -P</span><br></pre></td></tr></table></figure>
 
       
     </div>
