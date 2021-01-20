@@ -165,45 +165,43 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <a id="more"></a>
-
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为发现学习一些东西笔记东一点西一点，所以就想放在一个固定的地方，方便一点，找了一些资料，发现 github pages 和 hexo 可以免费搭建博客了（重点是免费），所以就试着搭建了一个，过程和一些坑都记录下。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为发现学习一些东西笔记东一点西一点，所以就想放在一个固定的地方，方便一点，找了一些资料，发现 github pages 和 hexo 可以免费搭建博客了（重点是免费），所以就试着搭建了一个，过程和一些坑都记录下。</p>
 <h2 id="Github-Pages"><a href="#Github-Pages" class="headerlink" title="Github Pages"></a>Github Pages</h2><p> GitHub Pages 是一个静态页面搭建托管服务，开搭。如果没有github账号去 <a target="_blank" rel="noopener" href="https://github.com/">注册</a> 一个，注册了的</p>
 <p>就点击右上角的+号选择 New repository 来建立仓库。在（仓库名）repository name中必须填（重点）：username.github.io 必须是你的github账号名字+github+io。这是固定的格式，Description 是对仓库的说明可以写：xxx的博客，个人博客之类的。仓库选择公开，不公开不能使用github的pages功能，我已经踩过坑了。差不多就是下面这样：</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117033559349.png" alt="image-20210117033559349" style="zoom:67%;">
+<img src="Hexo搭建个人博客/image-20210117033559349.png" alt="image-20210117033559349" style="zoom:67%;" />
 
 <p>然后来自己电脑上，我的电脑是win 10 的</p>
 <p>首先电脑上先安装Git，这是一个在GitHub上拉取资源和上传资源的工具，没有的可以自己在 <a target="_blank" rel="noopener" href="https://git-scm.com/downloads">下载</a> 安装下，如果想了解安装的细节的话可以看看廖雪峰老师的 <a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/896043488029600/896067074338496">Git安装教程</a></p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117033808505.png" alt="image-20210117033808505" style="zoom:50%;">
+<img src="Hexo搭建个人博客/image-20210117033808505.png" alt="image-20210117033808505" style="zoom:50%;" />
 
 <p>鼠标右键打开Git Bash Here ，或者在菜单栏搜索Git Bash打开也可以，设置user.name和user.email配置：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;你的GitHub用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
 <p>生成ssh密钥连接本地和GitHub：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
 <p>然后打开在 C:\Users\Administrator.ssh 文件夹中的 id_rsa.pub，复制全部内容，登录GitHub，点击右上角人物头像点击settings设置界面，</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117033957541.png" alt="image-20210117033957541.png" style="zoom:40%;">
+<img src="Hexo搭建个人博客/image-20210117033957541.png" alt="image-20210117033957541.png" style="zoom:40%;" />
 
 <p>然后选择SSH这个，再点击New SSH key加上密钥，写上这个密钥的说明，例如：家里的笔记本，台式电脑等，不然密钥多了你会不知道哪个是哪个，复制的内容贴在下面框里就好了，然后点击Add SSH key就好了。</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117034216610.png" alt="image-20210117034216610" style="zoom:50%;">
+<img src="Hexo搭建个人博客/image-20210117034216610.png" alt="image-20210117034216610" style="zoom:50%;" />
 
 <p>在Git Bash中检查是否设置密钥成功, 输入<code>ssh git@github.com </code>，如下图就说明成功了。</p>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117034437859.png" alt="image-20210117034437859"></p>
+<p><img src="Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image-20210117034437859.png" alt="image-20210117034437859"></p>
 <h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>hexo基于node，<a target="_blank" rel="noopener" href="https://nodejs.org/en/download/">下载安装</a> node安装包，node包含npm，默认安装好后检查是否安装成功，在Git Bash输入（记得关掉重启下Bash，不然不生效）：node -v ，npm -v</p>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117034630578.png" alt="image-20210117034630578"></p>
+<p><img src="Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image-20210117034630578.png" alt="image-20210117034630578"></p>
 <p>到这里安装hexo的环境都搭建好了</p>
 <h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>​        在电脑里面创建一个一个文件夹，可以命名为Blog之类的，我们的Hexo项目都放这个文件里面。进入文件夹，右键打开Git Bash，这样我们启动Bash后就直接在Blog文件下了</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/20210117221924.png" alt="20210117221924" style="zoom:50%;">
+<img src="Hexo搭建个人博客/20210117221924.png" alt="20210117221924" style="zoom:50%;" />
 
 <p>打开后是这样的：</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117020241448.png" alt="20210117020241448" style="zoom:50%;">
+<img src="Hexo搭建个人博客/image-20210117020241448.png" alt="20210117020241448" style="zoom:50%;" />
 
 <p>用npm安装hexo, </p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli # 注意在Blog文件夹中输入，安装后输入hexo -v报错：Cannot find module &#x27;hexo&#x27; from &#x27;&#x27;的话使用下面这条命令</span><br><span class="line">npm install hexo-util --save # 上面安装没报错的话不用这条命令</span><br></pre></td></tr></table></figure>
 <p>注意：我这里报错提示：系统禁止运行脚本，如果你没有的话跳过这步</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180357726.png" alt="image-20210118180357726" style="zoom:40%;">
+<img src="Hexo搭建博客/image-20210118180357726.png" alt="image-20210118180357726" style="zoom:40%;" />
 
 <p>然后点击左边的开发者选择，右边下滑找到PowerShell，勾选允许本地运行PowerShell脚本，点击应用，然后把输入界面重新打开一下，让设置生效就行了</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180450626.png" alt="image-20210118180450626" style="zoom:40%;">
+<img src="Hexo搭建博客/image-20210118180450626.png" alt="image-20210118180450626" style="zoom:40%;" />
 
 
 
@@ -219,12 +217,12 @@
 <li>repo后面填仓库地址（最后没有.git的话要加.git）</li>
 <li>branch后面填分支名字（建议放分支，随便写个不是主线的名字就好，会自动建立分支）</li>
 </ol>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117021949987.png" alt="image-20210117021949987"></p>
+<p><img src="Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/image-20210117021949987.png" alt="image-20210117021949987"></p>
 <p>在Git Bash中下载git</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
 <p>安装好就把准备好的项目上传GitHub主线</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone &#x27;GitHub项目地址&#x27; # 复制GitHub项目到本地，本地会有个与GitHub项目名文件</span><br></pre></td></tr></table></figure>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118181529871.png" alt="image-20210118181529871" style="zoom:80%;">
+<img src="Hexo搭建博客/image-20210118181529871.png" alt="image-20210118181529871" style="zoom:80%;" />
 
 <p>然后把搭建的博客项目上传到GitHub上去</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add * # 新增文件放入提交缓存中</span><br><span class="line">git commit  -m  &quot;提交说明&quot; # 就是对这次提交的说明</span><br><span class="line">git push -u origin main # 本地项目提交到GitHub主线上，GitHub上会少几个文件，不过不要紧</span><br></pre></td></tr></table></figure>
@@ -232,15 +230,32 @@
 <h4 id="GitHub托管博客"><a href="#GitHub托管博客" class="headerlink" title="GitHub托管博客"></a>GitHub托管博客</h4><p>可以推送到GitHub上了</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d # 这是hexo g,hexo d的简写，改完东西后一定记得先g再 s或d</span><br></pre></td></tr></table></figure>
 <p>推送完在去GitHub项目中设置Pages功能，先登录GitHub，进去博客项目，点击右边的Settings</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172021785.png" alt="image-20210118172021785" style="zoom:50%;">
+<img src="Hexo搭建博客/image-20210118172021785.png" alt="image-20210118172021785" style="zoom:50%;" />
 
 <p>下滑找到GitHub Pages，把branch设置成我们在_config.yml上写的分支名字。</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172312679.png" alt="image-20210118172312679" style="zoom:50%;">
+<img src="Hexo搭建博客/image-20210118172312679.png" alt="image-20210118172312679" style="zoom:50%;" />
 
 <p>好了，打开你的 username.github.io 看看吧</p>
 <h4 id="hexo命令："><a href="#hexo命令：" class="headerlink" title="hexo命令："></a>hexo命令：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hexo n &quot;博客&quot; #新建博客文章，在Blog\source\_posts文件夹中</span><br><span class="line">hexo g # 生成静态页面</span><br><span class="line">hexo s # 本地启动hexo服务</span><br><span class="line">hexo d # 推送到GitHub</span><br><span class="line"></span><br><span class="line">hexo server -p 5000 # 指定端口</span><br><span class="line">hexo clean # 清理缓存，若是网页正常情况下可以忽略这条命令</span><br></pre></td></tr></table></figure>
-<h4 id="博客添加图片"><a href="#博客添加图片" class="headerlink" title="博客添加图片"></a>博客添加图片</h4><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/codehome/p/8428738.html">博客添加图片</a></p>
+<h4 id="博客网址标题等修改"><a href="#博客网址标题等修改" class="headerlink" title="博客网址标题等修改"></a><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration">博客网址标题等修改</a></h4><h4 id="博客添加图片"><a href="#博客添加图片" class="headerlink" title="博客添加图片"></a>博客添加图片</h4><p>写博客时发现本地图片能看到，heox s服务启动能看到，但是部署到GitHub上后死活看不到，原因好像是博客上传上去后会自动添加日期等作为文件夹名字，所以图片名字就不对了。</p>
+<p>网上搜了搜需要用个图片插件</p>
+<p>先去项目中_config.yml文件中把post_asset_folder这个选择设为true</p>
+<p><img src="Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210120163629843.png" alt="image-20210120163629843"></p>
+<p>然后在blog文件夹中下载插件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-asset-image --save</span><br></pre></td></tr></table></figure>
+<p>安装好了以后，在用 hexo n “xxx” 新建博客时，在/source/_posts文件中除了会有 xxx.md的博客文件还会有一个与博客同名文件夹，博客图片保存在同名文件夹内，使用时在xxxx.md中按照markdown的格式引入图片</p>
+<h5 id="1、编辑器写博客"><a href="#1、编辑器写博客" class="headerlink" title="1、编辑器写博客"></a>1、编辑器写博客</h5><p>在需要图片的地方使用下面这两种方法都行，下面那个就是可以缩小图片，style里面那个就是说图片缩小50%后再显示。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">![<span class="string">描述</span>](<span class="link">xxx/图片名字.png</span>)</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;xxx/图片名字.png&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;图片无法显示时的替代信息&quot;</span> <span class="attr">style</span>=<span class="string">&quot;zoom:50%;&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure>
+<h5 id="2、用Typora写博客"><a href="#2、用Typora写博客" class="headerlink" title="2、用Typora写博客"></a>2、用Typora写博客</h5><p>Typora有保存图片位置的设置，我们把图片保存地址设置为同位置的同名文件夹就行了</p>
+<p>点击左上角文件，下拉选项选偏好设置</p>
+<img src="Hexo搭建博客/image-20210120165604892.png" alt="image-20210120165604892" style="zoom: 80%;" />
 
+<p>左边点击图像，然后在插入图片地址处点击下拉，选择复制到指定路径</p>
+<p><img src="Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210120165805721.png" alt="image-20210120165805721"></p>
+<p>在下面输入框中输入：./${filename} 你截图粘贴的时候就会把图片直接保存在博客同位置的同名文件夹中了，下面这些图片设置选项前三个最好勾上，其他看需求是否需要。</p>
+<p><img src="Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210120165928154.png" alt="image-20210120165928154"></p>
+<p>好了，现在博客部署到GitHub上就会显示图片了。</p>
+<h4 id="更换博客主题"><a href="#更换博客主题" class="headerlink" title="更换博客主题"></a>更换博客主题</h4><img src="img/QQ截图20210120171454.png">
       
     </div>
     <footer class="article-footer">
