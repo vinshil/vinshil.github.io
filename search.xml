@@ -87,7 +87,7 @@
 <p>使用markdown的格式引入图片就行了：</p>
 <figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![<span class="string">描述</span>](<span class="link">../img/图片名.png</span>)</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;../img/图片名.png&quot;</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
 <p>我是在img文件夹中还新建了个与博客同名的文件夹，方便管理图片，这个随意，图片全扔img文件夹都可以</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;../img/图片名.png&quot;</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;../img/xxx/图片名.png&quot;</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
 <ul>
 <li><strong>使用Typora编写博客</strong></li>
 </ul>
