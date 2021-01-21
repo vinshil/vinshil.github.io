@@ -1,11 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Ubuntu安装mysql</title>
+    <url>/2021/01/18/Ubuntu%E5%AE%89%E8%A3%85mysql/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p><a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https://www.mysql.com/">MySQL</a>是最流行的开源关系数据库管理系统。它速度快，容易使用，容易扩展，并且流行的<code>LAMP</code>和<code>LEMP</code>的一部分。安装电脑为Ubuntu 20.04</p>
+<a id="more"></a>
+
+<h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><h4 id="Ubuntu-版本"><a href="#Ubuntu-版本" class="headerlink" title="Ubuntu 版本"></a>Ubuntu 版本</h4><p>安装东西前看下Ubuntu版本，毕竟有些东西要看看版本能不能兼容</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo lsb_release -a</span><br></pre></td></tr></table></figure>
+<h4 id="安装MySQL-1"><a href="#安装MySQL-1" class="headerlink" title="安装MySQL"></a>安装MySQL</h4><p>开始安装：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt update # 更新源</span><br><span class="line">sudo apt install mysql-server # 安装mysql-server</span><br></pre></td></tr></table></figure>
+<p>检查是否安装成功：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql start</span><br></pre></td></tr></table></figure>
+<p>我这里报错了，如下，你没有报错的话可以跳过这里：</p>
+<p><img src="../img/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210119175539464.png" alt="image-20210119175539464"></p>
+<p>提示我没有一个文件，最后用了<a href="https://www.cnblogs.com/cnwcl/p/13805643.html">汪成龙老师</a>，解决方法：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql stop # 关闭mysql服务</span><br><span class="line">sudo usermod -d /var/lib/mysql/ mysql</span><br><span class="line">sudo service mysql start # 启动mysql服务，大部分报错可以重启mysql服务解决</span><br></pre></td></tr></table></figure>
+<h4 id="MySQL配置"><a href="#MySQL配置" class="headerlink" title="MySQL配置"></a>MySQL配置</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<p>按提示设置root密码，密码等级……</p>
+<p>好了后以root用户登录mysql</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo mysql</span><br></pre></td></tr></table></figure>
+<p>创建新用户：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"># 创建新用户：my_user</span><br><span class="line"># host：<span class="operator">%</span>表示任意连接，localhost表示只允许本地连接</span><br><span class="line"># 密码：my_passwrod</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;my_user&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;my_password&#x27;</span>;</span><br><span class="line"></span><br><span class="line"># 查询用户</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"></span><br><span class="line"># 删除用户，默认删除的是<span class="string">&#x27;xxx&#x27;</span>@<span class="string">&#x27;%&#x27;</span>用户，如果要删除<span class="string">&#x27;xxx&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>，使用<span class="keyword">drop</span> <span class="keyword">user</span> <span class="string">&#x27;xxx&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> my_user;</span><br></pre></td></tr></table></figure>
+<h4 id="允许远程连接MySQL"><a href="#允许远程连接MySQL" class="headerlink" title="允许远程连接MySQL"></a>允许远程连接MySQL</h4><p>修改mysql配置文件：/etc/mysql/mysql.conf.d/mysqld.cnf (老版的话在：/etc/mysql/my.cnf)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br></pre></td></tr></table></figure>
+<p>找到bind-address = 127.0.0.1 将其注释后保存退出，然后重启下MySQL服务，让配置生效就行了</p>
+<p><img src="../img/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210120155503110.png" alt="image-20210120155503110"></p>
+<p>然后可以用MySQL客户端（这个不要求我用的是免费的heidiSQL，用别的也一样）用刚刚创建的账号，连接试试看：</p>
+<p><img src="../img/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210120160018545.png" alt="image-20210120160018545"></p>
+<p>连接上了就好了</p>
+<h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><p>查看安装的mysql：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dpkg --list|grep mysql</span><br></pre></td></tr></table></figure>
+<p>删除mysql：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt-get remove mysql-*</span><br></pre></td></tr></table></figure>
+<p>清理残留数据：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dpkg -l |grep ^rc|awk &#x27;&#123;print $2&#125;&#x27; |sudo xargs dpkg -P</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo搭建博客</title>
     <url>/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为发现学习一些东西笔记东一点西一点，所以就想放在一个固定的地方，方便一点，找了一些资料，发现 github pages 和 hexo 可以免费搭建博客了（重点是免费），所以就试着搭建了一个，过程和一些坑都记录下。</p>
-<a id="more"></a>
-
 <h2 id="Github-Pages"><a href="#Github-Pages" class="headerlink" title="Github Pages"></a>Github Pages</h2><p> GitHub Pages 是一个静态页面搭建托管服务，开搭。如果没有github账号去 <a href="https://github.com/">注册</a> 一个，注册了的</p>
 <p>就点击右上角的+号选择 New repository 来建立仓库。在（仓库名）repository name中必须填（重点）：username.github.io 必须是你的github账号名字+github+io。这是固定的格式，Description 是对仓库的说明可以写：xxx的博客，个人博客之类的。仓库选择公开，不公开不能使用github的pages功能，我已经踩过坑了。差不多就是下面这样：</p>
 <img src="../img/Hexo搭建博客/image-20210117033559349.png" alt="image-20210117033559349" style="zoom:67%;" />
@@ -192,46 +230,6 @@
 ]]></content>
       <tags>
         <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Ubuntu安装mysql</title>
-    <url>/2021/01/18/Ubuntu%E5%AE%89%E8%A3%85mysql/</url>
-    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p><a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https://www.mysql.com/">MySQL</a>是最流行的开源关系数据库管理系统。它速度快，容易使用，容易扩展，并且流行的<code>LAMP</code>和<code>LEMP</code>的一部分。安装电脑为Ubuntu 20.04</p>
-<a id="more"></a>
-
-<h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><h4 id="Ubuntu-版本"><a href="#Ubuntu-版本" class="headerlink" title="Ubuntu 版本"></a>Ubuntu 版本</h4><p>安装东西前看下Ubuntu版本，毕竟有些东西要看看版本能不能兼容</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo lsb_release -a</span><br></pre></td></tr></table></figure>
-<h4 id="安装MySQL-1"><a href="#安装MySQL-1" class="headerlink" title="安装MySQL"></a>安装MySQL</h4><p>开始安装：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt update # 更新源</span><br><span class="line">sudo apt install mysql-server # 安装mysql-server</span><br></pre></td></tr></table></figure>
-<p>检查是否安装成功：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql start</span><br></pre></td></tr></table></figure>
-<p>我这里报错了，如下，你没有报错的话可以跳过这里：</p>
-<p><img src="../img/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210119175539464.png" alt="image-20210119175539464"></p>
-<p>提示我没有一个文件，最后用了<a href="https://www.cnblogs.com/cnwcl/p/13805643.html">汪成龙老师</a>，解决方法：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql stop # 关闭mysql服务</span><br><span class="line">sudo usermod -d /var/lib/mysql/ mysql</span><br><span class="line">sudo service mysql start # 启动mysql服务，大部分报错可以重启mysql服务解决</span><br></pre></td></tr></table></figure>
-<h4 id="MySQL配置"><a href="#MySQL配置" class="headerlink" title="MySQL配置"></a>MySQL配置</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo mysql_secure_installation</span><br></pre></td></tr></table></figure>
-<p>按提示设置root密码，密码等级……</p>
-<p>好了后以root用户登录mysql</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo mysql</span><br></pre></td></tr></table></figure>
-<p>创建新用户：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"># 创建新用户：my_user</span><br><span class="line"># host：<span class="operator">%</span>表示任意连接，localhost表示只允许本地连接</span><br><span class="line"># 密码：my_passwrod</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;my_user&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;my_password&#x27;</span>;</span><br><span class="line"></span><br><span class="line"># 查询用户</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"></span><br><span class="line"># 删除用户，默认删除的是<span class="string">&#x27;xxx&#x27;</span>@<span class="string">&#x27;%&#x27;</span>用户，如果要删除<span class="string">&#x27;xxx&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>，使用<span class="keyword">drop</span> <span class="keyword">user</span> <span class="string">&#x27;xxx&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> my_user;</span><br></pre></td></tr></table></figure>
-<h4 id="允许远程连接MySQL"><a href="#允许远程连接MySQL" class="headerlink" title="允许远程连接MySQL"></a>允许远程连接MySQL</h4><p>修改mysql配置文件：/etc/mysql/mysql.conf.d/mysqld.cnf (老版的话在：/etc/mysql/my.cnf)</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br></pre></td></tr></table></figure>
-<p>找到bind-address = 127.0.0.1 将其注释后保存退出，然后重启下MySQL服务，让配置生效就行了</p>
-<p><img src="../img/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210120155503110.png" alt="image-20210120155503110"></p>
-<p>然后可以用MySQL客户端（这个不要求我用的是免费的heidiSQL，用别的也一样）用刚刚创建的账号，连接试试看：</p>
-<p><img src="../img/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210120160018545.png" alt="image-20210120160018545"></p>
-<p>连接上了就好了</p>
-<h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><p>查看安装的mysql：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dpkg --list|grep mysql</span><br></pre></td></tr></table></figure>
-<p>删除mysql：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt-get remove mysql-*</span><br></pre></td></tr></table></figure>
-<p>清理残留数据：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dpkg -l |grep ^rc|awk &#x27;&#123;print $2&#125;&#x27; |sudo xargs dpkg -P</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>mysql</tag>
       </tags>
   </entry>
 </search>
