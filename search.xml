@@ -161,6 +161,8 @@
     <title>博客next主题个性化设置</title>
     <url>/2021/01/22/%E5%8D%9A%E5%AE%A2next%E4%B8%BB%E9%A2%98%E4%B8%AA%E6%80%A7%E5%8C%96%E8%AE%BE%E7%BD%AE/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>博客项目中有个_config.yml是用来配置博客网站的，以下简称站点配置，下载的next主题文件中也有个_config.yml用来设置主题的， 以下简称主题配置</p>
+<a id="more"></a>
+
 <h4 id="更换next主题"><a href="#更换next主题" class="headerlink" title="更换next主题"></a>更换next主题</h4><p>将自己喜欢的主题下载到themes文件夹中，这里就是放主题的，我选的是<a href="https://github.com/theme-next/hexo-theme-next">next主题</a>，你也可以选其他喜欢的主题</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
 <p>修改_config.yml配置，把theme字段配置为新下载的主题：</p>
