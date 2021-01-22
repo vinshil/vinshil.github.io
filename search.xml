@@ -36,6 +36,9 @@
 <p>清理残留数据：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dpkg -l |grep ^rc|awk &#x27;&#123;print $2&#125;&#x27; |sudo xargs dpkg -P</span><br></pre></td></tr></table></figure>
 ]]></content>
+      <categories>
+        <category>服务器</category>
+      </categories>
       <tags>
         <tag>mysql</tag>
       </tags>
