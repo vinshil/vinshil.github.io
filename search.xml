@@ -457,4 +457,18 @@
         <tag>Go</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Go文件操作</title>
+    <url>/2021/01/27/Go%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go文件操作</p>
+<a id="more"></a>
+
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2>]]></content>
+      <categories>
+        <category>Go,日志</category>
+      </categories>
+      <tags>
+        <tag>Go,日志</tag>
+      </tags>
+  </entry>
 </search>
