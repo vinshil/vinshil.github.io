@@ -111,7 +111,7 @@
 </blockquote>
 ]]></content>
       <categories>
-        <category>搭建博客</category>
+        <category>博客</category>
       </categories>
       <tags>
         <tag>hexo</tag>
@@ -371,13 +371,16 @@
 </blockquote>
 ]]></content>
       <categories>
-        <category>搭建博客</category>
+        <category>博客</category>
       </categories>
+      <tags>
+        <tag>next</tag>
+      </tags>
   </entry>
   <entry>
     <title>Go环境搭建</title>
     <url>/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录自己的Go的环境搭建之路</p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录自己的Go的环境搭建</p>
 <p>安装Go语言</p>
 <p>官网地址：<a href="https://golang.org/%EF%BC%88%E5%9B%BD%E5%A4%96%E7%BD%91%E5%9D%80%EF%BC%8C%E8%A2%AB%E5%A2%99%EF%BC%89">https://golang.org/（国外网址，被墙）</a></p>
 <p>官方镜像：<a href="https://golang.google.cn/">https://golang.google.cn/</a></p>
@@ -525,10 +528,10 @@
 </blockquote>
 ]]></content>
       <categories>
-        <category>Go,日志</category>
+        <category>Go</category>
       </categories>
       <tags>
-        <tag>Go,日志</tag>
+        <tag>Go</tag>
       </tags>
   </entry>
 </search>
