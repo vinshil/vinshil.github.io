@@ -178,6 +178,7 @@ template {
 [hidden] {
   display: none
 }
+
 .limit-one-line,
 #article-container .flink .flink-list > .flink-list-item a .flink-item-name,
 #article-container .flink .flink-list > .flink-list-item a .flink-item-desc,
@@ -2148,16 +2149,6 @@ blockquote footer cite:before {
     width: 100% !important;
   }
 }
-@media screen and (min-width: 900px) {
-  .layout > div:first-child {
-    -webkit-box-ordinal-group: 2;
-    -moz-box-ordinal-group: 2;
-    -o-box-ordinal-group: 2;
-    -ms-flex-order: 2;
-    -webkit-order: 2;
-    order: 2;
-  }
-}
 .layout.hide-aside {
   max-width: 1000px;
 }
@@ -2640,7 +2631,7 @@ blockquote footer cite:before {
 }
 @media screen and (min-width: 900px) {
   #aside-content {
-    padding-right: 15px;
+    padding-left: 15px;
   }
 }
 @media screen and (max-width: 900px) {
@@ -3810,7 +3801,7 @@ _:future,
   display: inline-block !important;
 }
 #nav.hide-menu #toggle-menu .site-page {
-  font-size: inherit;
+  font-size: 0.7rem;
 }
 #nav.hide-menu .menus_items {
   position: absolute;
@@ -3932,6 +3923,53 @@ _:future,
 #pagination.pagination-post {
   margin-top: 2rem;
   background: #000;
+}
+#pagination >.recent-post-info,
+#pagination display: inline-block,
+#pagination overflow: hidden,
+#pagination padding: 50px 40px,
+#pagination width: 55%,
+#pagination > .article-title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  color: #4c4948;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+#pagination > .content {
+  display: -webkit-box;
+  overflow: scroll;
+  margin-top: 0.2rem;
+  height: 97px;
+  word-break: break-word;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+#pagination .page-number {
+  display: inline-block;
+  margin: 0 0.2rem;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  text-align: center;
+  line-height: 1.5rem;
+  cursor: pointer;
+}
+#pagination.current {
+  background: #49b1f5;
+  color: #fff;
+  cursor: default;
+  border-radius: 20px;
 }
 #article-container {
   word-wrap: break-word;
@@ -4594,6 +4632,15 @@ _:future,
 #sidebar #sidebar-menus .menus_items .menus_item_child {
   margin: 0;
   list-style: none;
+}
+#sidebar #sidebar-menus .menus_items .toc-link.active {
+  border-right-color: #009d92;
+  background: #00c4b6;
+  color: $sidebar-active-color;
+  border-radius: 5px;
+  width: max-content;
+  padding-right: 5px;
+  padding-left: 5px;
 }
 #vcomment,
 #waline {

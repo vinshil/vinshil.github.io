@@ -29,6 +29,23 @@
       </tags>
   </entry>
   <entry>
+    <title>Go操作Redis</title>
+    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
+<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
+<blockquote>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Go</category>
+      </categories>
+      <tags>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Go文件操作</title>
     <url>/2021/01/27/Go%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go文件操作</p>
@@ -139,23 +156,6 @@
       </categories>
       <tags>
         <tag>日志</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Go操作Redis</title>
-    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
-<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
-<blockquote>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Go</category>
-      </categories>
-      <tags>
-        <tag>redis</tag>
       </tags>
   </entry>
   <entry>
