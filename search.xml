@@ -1,6 +1,255 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Go操作Mysql</title>
+    <url>/2021/02/02/Go%E6%93%8D%E4%BD%9CMySQL/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>MySQL是业界常用的关系型数据库，记录Go如何操作MySQL数据库</p>
+<a id="more"></a>
+
+<h2 id="连接MySQL"><a href="#连接MySQL" class="headerlink" title="连接MySQL"></a>连接MySQL</h2><p>Go语言中的 <code>database/sql</code> 包提供了 <code>SQL</code> 或类 <code>SQL</code> 数据库的泛用接口，并需要（至少一个）数据库驱动，一般使用第三方<a href="https://github.com/go-sql-driver/mysql">MySQL驱动</a></p>
+<h3 id="下载驱动"><a href="#下载驱动" class="headerlink" title="下载驱动"></a>下载驱动</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">go</span> get -u github.com/<span class="keyword">go</span>-sql-driver/mysql</span><br></pre></td></tr></table></figure>
+<h3 id="使用驱动"><a href="#使用驱动" class="headerlink" title="使用驱动"></a>使用驱动</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Open</span><span class="params">(driverName, dataSourceName <span class="keyword">string</span>)</span> <span class="params">(*DB, error)</span></span></span><br></pre></td></tr></table></figure>
+<p><code>Open</code> 函数打开一个 <code>driverName</code> 指定的数据库，<code>dataSourceName</code> 指定数据源，模式是：</p>
+<p><code>(数据库)账号:密码@连接方式(ip地址:端口号)/数据库名</code> </p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;database/sql&quot;</span></span><br><span class="line">	_ <span class="string">&quot;github.com/go-sql-driver/mysql&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	db, err := sql.Open(<span class="string">&quot;mysql&quot;</span>, <span class="string">&quot;user:password@tcp(127.0.0.1:3306)/dbname&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> db.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="初始化连接"><a href="#初始化连接" class="headerlink" title="初始化连接"></a>初始化连接</h3><p><code>Open</code> 函数只检查输入的数据源格式是否正确，无法确认输入的数据源是否存在（类似注册账号时填写的邮件，它只判断你填写的是否是：<code>xx@qq.com</code> 这类的格式，不知道你输入的账号是否存在），所以我们用 <code>Ping</code> 方法来确认：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;database/sql&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line"></span><br><span class="line">	_ <span class="string">&quot;github.com/go-sql-driver/mysql&quot;</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">// 全局db</span></span><br><span class="line"><span class="keyword">var</span> db *sql.DB</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">InitDB</span><span class="params">()</span> <span class="params">(err error)</span></span> &#123;</span><br><span class="line">	db, err = sql.Open(<span class="string">&quot;mysql&quot;</span>, <span class="string">&quot;user:password@tcp(127.0.0.1:3306)/dbname&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> db.Close()</span><br><span class="line">    <span class="comment">// 尝试与数据库建立连接(校验数据源是否存在)</span></span><br><span class="line">	err = db.Ping()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123; </span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	err := InitDB()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;init db failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="连接配置"><a href="#连接配置" class="headerlink" title="连接配置"></a>连接配置</h3><h4 id="最大连接数"><a href="#最大连接数" class="headerlink" title="最大连接数"></a>最大连接数</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">SetMaxOpenConns</span><span class="params">(n <span class="keyword">int</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p><code>SetMaxOpenConns</code> 设置与数据库建立连接的最大数目。如果n&gt;0且小于最大闲置连接数，会将最大闲置连接数减小到匹配最大开启连接数的限制。如果n&lt;=0，不会限制最大开启连接数，默认为0 (无限制)</p>
+<h4 id="最大闲置数"><a href="#最大闲置数" class="headerlink" title="最大闲置数"></a>最大闲置数</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">SetMaxIdleConns</span><span class="params">(n <span class="keyword">int</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p><code>SetMaxIdleConns</code> 设置连接池中最大闲置连接数。如果n大于最大连接数，则新的最大闲置连接数会减小到匹配最大开启连接数的闲置。如果n&lt;=0，不会保留闲置连接。</p>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章的帮助：</p>
+<blockquote>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_mysql/">Go语言操作MySQL</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Go操作Redis</title>
+    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
+<a id="more"></a>
+
+<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
+<blockquote>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Go</category>
+      </categories>
+      <tags>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Go文件操作</title>
+    <url>/2021/01/27/Go%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go文件操作</p>
+<a id="more"></a>
+
+<h2 id="打开、关闭文件"><a href="#打开、关闭文件" class="headerlink" title="打开、关闭文件"></a>打开、关闭文件</h2><p><code>os.Open()</code> 函数可以打开一个文件，返回 <code>*File</code> 和 <code>err</code> 。对得到的文件实例调用 <code>close()</code> 方法关闭文件</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 只读方式打开一个文件</span></span><br><span class="line">    file, err := os.Open(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;open &#x27;./main.go&#x27; file failed!, err:&quot;</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 关闭文件</span></span><br><span class="line">    file.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h2><h3 id="file-Read"><a href="#file-Read" class="headerlink" title="file.Read()"></a>file.Read()</h3><h4 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h4><p>Read方法定义：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f *file)</span> <span class="title">Read</span><span class="params">(b []<span class="keyword">byte</span>)</span> <span class="params">(n <span class="keyword">int</span>, err error)</span></span></span><br></pre></td></tr></table></figure>
+<p>它接受一个切片字节，返回读取到的字节数和可能的错误，读到文件末尾时会返回 <code>0</code> 和 <code>io.EOF</code> 。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 只读方式打开一个文件</span></span><br><span class="line">	file, err := os.Open(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open &#x27;./main.go&#x27; file failed!, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 关闭文件</span></span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	<span class="comment">// 使用Read方法读取数据</span></span><br><span class="line">	<span class="keyword">var</span> tmp = <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">128</span>)</span><br><span class="line">    <span class="comment">// 读取file实例的数据放在tmp变量中，返回读取的字节数量n和可能出现的err</span></span><br><span class="line">	n, err := file.Read(tmp)</span><br><span class="line">	<span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;文件读完了&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;read file failed, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="keyword">string</span>(tmp[:n]))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="循环读取"><a href="#循环读取" class="headerlink" title="循环读取"></a>循环读取</h4><p>使用for循环读取文件中的所有数据：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 只读方式打开一个文件，返回一个file实例和可能出现的err</span></span><br><span class="line">	file, err := os.Open(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open &#x27;./main.go&#x27; file failed!, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 关闭文件</span></span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	<span class="comment">// 使用Read方法读取数据</span></span><br><span class="line">	<span class="keyword">var</span> tmp = <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">128</span>)</span><br><span class="line">	<span class="keyword">var</span> cont []<span class="keyword">byte</span></span><br><span class="line">	<span class="keyword">for</span> &#123; </span><br><span class="line">		n, err := file.Read(tmp)</span><br><span class="line">		<span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">          	fmt.Println(<span class="string">&quot;文件读完了&quot;</span>)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;read file failed, err:&quot;</span>, err)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		cont = <span class="built_in">append</span>(cont, tmp[:n]...)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="keyword">string</span>(cont))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="bufio读取文件"><a href="#bufio读取文件" class="headerlink" title="bufio读取文件"></a>bufio读取文件</h3><p>bufio在file的基础上封装了一层API，支持更多功能：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 只读方式打开一个文件</span></span><br><span class="line">	file, err := os.Open(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open &#x27;./main.go&#x27; file failed!, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 关闭文件</span></span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	reader := bufio.NewReader(file)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// 读取到ReadString参数后停止，例：&#x27;\n&#x27;，读取到换行停止，也就是按行读取</span></span><br><span class="line">        <span class="comment">// 返回读取到的数据line和可能出现的err</span></span><br><span class="line">		line, err := reader.ReadString(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">		<span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;文件读完了&quot;</span>)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;read file failed, err:&quot;</span>, err)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Print(line)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ioutil读取整个文件"><a href="#ioutil读取整个文件" class="headerlink" title="ioutil读取整个文件"></a>ioutil读取整个文件</h3><p><code>io/ioutil</code> 包的 <code>ReadFile</code> 方法可以读取完整的文件，只需将文件名字作为参数传入：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// ioutil.ReadFile读取整个文件</span></span><br><span class="line">    cont, err := ioutil.ReadFile(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;read file failed, err:&quot;</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(<span class="keyword">string</span>(cont))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><h3 id="打开文件OpenFile"><a href="#打开文件OpenFile" class="headerlink" title="打开文件OpenFile"></a>打开文件<code>OpenFile</code></h3><p>写入文件因为可能有：目标文件不存在、无权限等情况，所以 <code>os.Open</code> 函数不够</p>
+<p><code>os.OpenFile()</code> 函数可以以指定模式打开文件，实现文件写入操作：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">OpenFile</span><span class="params">(name <span class="keyword">string</span>, flag <span class="keyword">int</span>, perm FileMode)</span> <span class="params">(*File, err)</span></span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<p><code>name</code>：要打开的文件名 <code>flag</code>：打开文件的模式。 模式有以下几种，<code>perm</code>：文件权限，一个八进制数。r（读）04，w（写）02，x（执行）01。</p>
+<table>
+<thead>
+<tr>
+<th align="left">模式</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>os.O_WRONLY</code></td>
+<td align="left">只写</td>
+</tr>
+<tr>
+<td align="left"><code>os.O_CREATE</code></td>
+<td align="left">创建文件</td>
+</tr>
+<tr>
+<td align="left"><code>os.O_RDONLY</code></td>
+<td align="left">只读</td>
+</tr>
+<tr>
+<td align="left"><code>os.O_RDWR</code></td>
+<td align="left">读写</td>
+</tr>
+<tr>
+<td align="left"><code>os.O_TRUNC</code></td>
+<td align="left">清空</td>
+</tr>
+<tr>
+<td align="left"><code>os.O_APPEND</code></td>
+<td align="left">追加</td>
+</tr>
+</tbody></table>
+<h3 id="write-写入文件"><a href="#write-写入文件" class="headerlink" title="write 写入文件"></a><code>write</code> 写入文件</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 打开xx.txt文件，模式：文件不存在则创建|只写入|写入时清空目标文件，文件权限为0666</span></span><br><span class="line">	file, err := os.OpenFile(<span class="string">&quot;./xx.txt&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, <span class="number">0666</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	str := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	<span class="comment">// 写入[]byte数据</span></span><br><span class="line">	file.Write([]<span class="keyword">byte</span>(str))</span><br><span class="line">	<span class="comment">// 直接写入字符串</span></span><br><span class="line">	file.WriteString(str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="bufio-NewWriter-写入文件"><a href="#bufio-NewWriter-写入文件" class="headerlink" title="bufio.NewWriter  写入文件"></a><code>bufio.NewWriter</code>  写入文件</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	file, err := os.OpenFile(<span class="string">&quot;./xx.txt&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, <span class="number">0666</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	writer := bufio.NewWriter(file)</span><br><span class="line">	str := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	<span class="comment">// 将数据写入缓存中</span></span><br><span class="line">	writer.WriteString(str)</span><br><span class="line">	<span class="comment">// 将缓存中的内容写入文件</span></span><br><span class="line">	writer.Flush()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ioutil-WriteFile-写入文件"><a href="#ioutil-WriteFile-写入文件" class="headerlink" title="ioutil.WriteFile 写入文件"></a><code>ioutil.WriteFile</code> 写入文件</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    str := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">    <span class="comment">// ioutil.WriteFile默认使用：文件不存在则创建|只写入|写入时清空目标文件，模式来写入文件</span></span><br><span class="line">    err := ioutil.WriteFile(<span class="string">&quot;./xx.txt&quot;</span>, []<span class="keyword">byte</span>(str), <span class="number">0666</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;write file failed, err:&quot;</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="文件分割与合并"><a href="#文件分割与合并" class="headerlink" title="文件分割与合并"></a>文件分割与合并</h2><h3 id="大文件分割"><a href="#大文件分割" class="headerlink" title="大文件分割"></a>大文件分割</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// chunkSize:文件分割成多大</span></span><br><span class="line"><span class="keyword">const</span> chunkSize = <span class="number">1</span> &lt;&lt; (<span class="number">10</span> * <span class="number">2</span>)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 参数是文件，返回的是文件信息:name,size...(名字，大小等等...)</span></span><br><span class="line">	fileInfo, err := os.Stat(<span class="string">&quot;xx.log&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// num：分割文件个数，math.Ceil：向上取整</span></span><br><span class="line">	num := math.Ceil(<span class="keyword">float64</span>(fileInfo.Size()) / chunkSize)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 以只读模式打开文件，ModePerm：文件权限0777</span></span><br><span class="line">	fi, err := os.OpenFile(<span class="string">&quot;xx.log&quot;</span>, os.O_RDONLY, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> fi.Close()</span><br><span class="line">	b := <span class="built_in">make</span>([]<span class="keyword">byte</span>, chunkSize)</span><br><span class="line">	<span class="keyword">var</span> i <span class="keyword">int64</span> = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> ; i &lt;= <span class="keyword">int64</span>(num); i++ &#123;</span><br><span class="line">		<span class="comment">// 读取chunkSize大小的fi的数据放入b</span></span><br><span class="line">		fi.Seek((i<span class="number">-1</span>)*chunkSize, <span class="number">0</span>)</span><br><span class="line">        <span class="comment">// 当b的长度大于剩余数据长度时，b长度为剩余数据长度</span></span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(b) &gt; <span class="keyword">int</span>(fileInfo.Size()-(i<span class="number">-1</span>)*chunkSize) &#123;</span><br><span class="line">			b = <span class="built_in">make</span>([]<span class="keyword">byte</span>, fileInfo.Size()-(i<span class="number">-1</span>)*chunkSize)</span><br><span class="line">		&#125;</span><br><span class="line">		fi.Read(b)</span><br><span class="line">        <span class="comment">// 把b中的数据写入f，文件名字以: i.log为名</span></span><br><span class="line">		f, err := os.OpenFile(<span class="string">&quot;./&quot;</span>+strconv.Itoa(<span class="keyword">int</span>(i))+<span class="string">&quot;.log&quot;</span>, os.O_CREATE|os.O_WRONLY, os.ModePerm)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="built_in">panic</span>(err)</span><br><span class="line">		&#125;</span><br><span class="line">        <span class="keyword">defer</span> f.Close()</span><br><span class="line">		f.Write(b)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="文件合并"><a href="#文件合并" class="headerlink" title="文件合并"></a>文件合并</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fii, err := os.OpenFile(<span class="string">&quot;xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="keyword">defer</span> fii.Close()</span><br><span class="line">    <span class="comment">// num：合并文件个数</span></span><br><span class="line">    num := <span class="number">1</span></span><br><span class="line">    <span class="comment">// i.log的数据写入b中，b中的数据以追加的方式加入xx.log中</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= num; i++ &#123;</span><br><span class="line">		f, err := os.OpenFile(<span class="string">&quot;./&quot;</span>+strconv.Itoa(<span class="keyword">int</span>(i))+<span class="string">&quot;.log&quot;</span>, os.O_RDONLY, os.ModePerm)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(err)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		b, err := ioutil.ReadAll(f)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(err)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		fii.Write(b)</span><br><span class="line">		f.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章的帮助：</p>
+<blockquote>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_file/">Go语言文件操作</a></p>
+<p><a href="https://studygolang.com/articles/2687">golang 大文件分割</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Go</category>
+      </categories>
+      <tags>
+        <tag>Go</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Go日志</title>
+    <url>/2021/02/02/Go%E6%97%A5%E5%BF%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go日志操作</p>
+<a id="more"></a>
+
+<h2 id="标准log库"><a href="#标准log库" class="headerlink" title="标准log库"></a>标准log库</h2><h3 id="log输出"><a href="#log输出" class="headerlink" title="log输出"></a>log输出</h3><p>Go有 <code>fmt.Print</code> 输出，但是使用 <code>log.Print</code> 得话输出自带时间，可以更好帮我们找到出现问题得时间：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">11</span>:<span class="number">54</span>:<span class="number">25</span> hello world</span><br></pre></td></tr></table></figure>
+<h3 id="定制log输出"><a href="#定制log输出" class="headerlink" title="定制log输出"></a>定制log输出</h3><p>有了时间，但是我们还想要更多得信息，发生得源代码行号等等，对此 <code>log</code> 提供了可定制化配置，可以定制日志的抬头信息</p>
+<p>可以定义的选项：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Ldate         = <span class="number">1</span> &lt;&lt; <span class="literal">iota</span>     <span class="comment">//日期示例： 2009/01/23</span></span><br><span class="line">    Ltime                         <span class="comment">//时间示例: 01:23:23</span></span><br><span class="line">    Lmicroseconds                 <span class="comment">//毫秒示例: 01:23:23.123123.</span></span><br><span class="line">    Llongfile                     <span class="comment">//绝对路径和行号: /a/b/c/d.go:23</span></span><br><span class="line">    Lshortfile                    <span class="comment">//文件和行号: d.go:23.</span></span><br><span class="line">    LUTC                          <span class="comment">//日期时间转为0时区的</span></span><br><span class="line">    LstdFlags     = Ldate | Ltime <span class="comment">//Go提供的标准抬头信息</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>现在定制：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
+<h3 id="日志前缀"><a href="#日志前缀" class="headerlink" title="日志前缀"></a>日志前缀</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Prefix 查看前缀</span></span><br><span class="line"><span class="comment">// SetPrefix 设置前缀</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Prefix</span> 查看前缀<span class="params">()</span> <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetPrefix</span><span class="params">(prefix <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p>最后一个 <code>LstdFlags</code> 是日志前缀，大部分情况项目有很多业务，添加前缀可以区分这些业务：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">【UserCenter】<span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
+<h3 id="日志输出位置"><a href="#日志输出位置" class="headerlink" title="日志输出位置"></a>日志输出位置</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetOutput</span><span class="params">(w io.Writer)</span></span></span><br></pre></td></tr></table></figure>
+<p><code>SetOutput</code> 函数用来设置log的输出目的地</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	log.SetOutput(logFile)</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="创建logger"><a href="#创建logger" class="headerlink" title="创建logger"></a>创建logger</h3><p><code>log</code> 标准库中还提供一个 <code>logger</code> 对象的构造函数— <code>New</code> ，支持我们创建自己的 <code>logger</code> 实例。 <code>New</code> 函数签名如下：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(out io.Writer, prefix <span class="keyword">string</span>, flag <span class="keyword">int</span>)</span> *<span class="title">Logger</span></span></span><br></pre></td></tr></table></figure>
+<p>其中，<code>out</code> 设置日志信息写入的目的地。<code>prefix</code> 会添加到生成的每一条日志前面的前缀。<code>flag</code> 定义日志的属性（时间、文件等等）。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	logger := log.New(logFile, <span class="string">&quot;&quot;</span>, log.Ldate|log.Ltime|log.Llongfile)</span><br><span class="line">	logger.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章得帮助：</p>
+<blockquote>
+<p><a href="https://www.jianshu.com/p/d634316a9487">Go log 日志</a></p>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_log/">Go语言标准库log介绍</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Go</category>
+      </categories>
+      <tags>
+        <tag>日志</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Go环境搭建</title>
+    <url>/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录自己的Go的环境搭建</p>
+<p>安装Go语言</p>
+<p>官网地址：<a href="https://golang.org/%EF%BC%88%E5%9B%BD%E5%A4%96%E7%BD%91%E5%9D%80%EF%BC%8C%E8%A2%AB%E5%A2%99%EF%BC%89">https://golang.org/（国外网址，被墙）</a></p>
+<p>官方镜像：<a href="https://golang.google.cn/">https://golang.google.cn/</a></p>
+<a id="more"></a>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="windouws-安装"><a href="#windouws-安装" class="headerlink" title="windouws 安装"></a>windouws 安装</h3><p>官网下载<a href="https://golang.google.cn/dl/">windows最新安装包</a></p>
+<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125142256031.png" alt="image-20210125142256031"></p>
+<p>将上述安装包下载到本地后双击运行安装即可，安装地址自己设置一个就行，建议设置一个一级目录</p>
+<h3 id="Linux-下安装"><a href="#Linux-下安装" class="headerlink" title="Linux 下安装"></a>Linux 下安装</h3><p>如果不是Linux平台敲代码就不需要再Linux安装Go，Go代码可以跨平台编译（详见文章末尾）</p>
+<p>在版本选择界面选择下载Go文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget https://golang.google.cn/dl/go1.15.7.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
+<p>解压到<code>/usr/local</code>目录下即可：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo tar -zxvf go1.15.7.linux-amd64.tar.gz -C /usr/local  # 解压</span><br></pre></td></tr></table></figure>
+<h2 id="环境变量：GOROOT和GOPATH"><a href="#环境变量：GOROOT和GOPATH" class="headerlink" title="环境变量：GOROOT和GOPATH"></a>环境变量：GOROOT和GOPATH</h2><p>GOROOT：Go得安装路径</p>
+<p>GOPATH：Go的工作目录路径，保存Go项目代码和第三方依赖（就是自己建个文件用来专门写Go代码的）</p>
+<p>工作目录中建立<code>bin</code>、<code>pkg</code>、<code>src</code>三个目录</p>
+<h3 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h3><p>Go 1.8版本开始，Go会设置一个默认目录，可以根据自己需要在用户变量或系统变量增删</p>
+<img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125164641082.png" alt="image-20210125164641082" style="zoom:80%;">
+
+<p>最后将go安装目录的bin目录和go工作目录的bin目录加入<code>Path</code>变量就可以了，根据自己需要加入系统变量或用户变量</p>
+<img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125164535792.png" alt="image-20210125164535792" style="zoom:80%;">
+
+<p>在cmd中输入<code>go version</code>后出现go的信息表示成功</p>
+<h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h3><p>Liunx有两个文件可以配置变量，其中<code>/etc/profile</code> 是系统变量文件；<code>~/.profile</code>是用户变量根据自己情况选择一个文件，添加如下两行代码：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export GOROOT=/usr/local/go</span><br><span class="line">export PATH=$PATH:$GOROOT/bin</span><br></pre></td></tr></table></figure>
+<p>修改系统变量需要重启生效，修改用户变量可以使用<code>source</code>命令加载文件生效</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">source ~/.profile</span><br></pre></td></tr></table></figure>
+<p>输入<code>go version</code>出现go信息表示成功</p>
+<h3 id="GOPROXY和GO111MODULE"><a href="#GOPROXY和GO111MODULE" class="headerlink" title="GOPROXY和GO111MODULE"></a>GOPROXY和GO111MODULE</h3><p>默认GOPROXY配置是：<code>GOPROXY=https://proxy.golang.org,direct</code>国内访问不到，需要修改</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">go env # 查看go环境信息</span><br><span class="line">go env -w GOPROXY=https://goproxy.cn,direct # 设置go镜像</span><br><span class="line">go env -w GO111MODULE=on # 设置gomod</span><br></pre></td></tr></table></figure>
+<h2 id="编辑器VS-Code"><a href="#编辑器VS-Code" class="headerlink" title="编辑器VS Code"></a>编辑器VS Code</h2><p>官网根据自己电脑平台下载相应安装包安装：<a href="https://code.visualstudio.com/Download">https://code.visualstudio.com/Download</a></p>
+<p>左侧菜单栏介绍：</p>
+<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125161544227.png" alt="image-20210125161544227"></p>
+<p>在扩展里面输入<code>chinese</code>，选择第一个安装中文简体插件</p>
+<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125161921818.png" alt="image-20210125161921818"></p>
+<p>输入Go安装Go插件，让vs支持Go开发</p>
+<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125162041573.png" alt="image-20210125162041573"></p>
+<p>中文插件和Go插件重启vs后生效</p>
+<p>安装Go开发插件，在vs按<code>Shift+Ctrl+p</code>输入<code>go:install/update tools</code>点击确定，选择全选，点击确定</p>
+<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125162530646.png" alt="image-20210125162530646"></p>
+<p>等待安装完成就可以了</p>
+<h3 id="windows下切换cmd为默认终端"><a href="#windows下切换cmd为默认终端" class="headerlink" title="windows下切换cmd为默认终端"></a>windows下切换cmd为默认终端</h3><p>打开vs终端后显示如红框内，则点击下拉框，选择默认shell，然后选择cmd，重启终端；</p>
+<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125163548882.png" alt="image-20210125163548882"></p>
+<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125163639207.png" alt="image-20210125163639207"></p>
+<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125163702150.png" alt="image-20210125163702150"></p>
+<p>终端没有下拉框的话可以按下<code>Shift+Ctrl+P</code>输入<code>shell</code>选择默认shell也可以</p>
+<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125164015495.png" alt="image-20210125164015495"></p>
+<h2 id="第一个Go程序"><a href="#第一个Go程序" class="headerlink" title="第一个Go程序"></a>第一个Go程序</h2><p>在<code>src</code>目录下新建一个<code>hello</code>文件夹，里面新建<code>mian.go</code>文件，文件中输入：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;Hello World!&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>终端输入：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 如果在hello目录下执行：</span></span><br><span class="line"><span class="keyword">go</span> build</span><br><span class="line"><span class="comment">// 或者在其他目录执行以下命令：</span></span><br><span class="line"><span class="keyword">go</span> build hello</span><br></pre></td></tr></table></figure>
+<p>编译后会生成<code>hello.exe</code>文件，终端执行改文件</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">G:\goproject\src\lianxi\hello&gt;hello.exe</span><br><span class="line">Hello World!</span><br></pre></td></tr></table></figure>
+<p>可以用<code>-o</code>指定编译后的的文件名字：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 默认与项目同名，可用-o参数修改</span></span><br><span class="line"><span class="keyword">go</span> build -o heiheihei.exe</span><br></pre></td></tr></table></figure>
+<h2 id="跨平台编译"><a href="#跨平台编译" class="headerlink" title="跨平台编译"></a>跨平台编译</h2><p>默认我们<code>go build</code>的可执行文件都是当前操作系统可执行的文件，如果我想在windows下编译一个linux下可执行文件，那需要怎么做呢？</p>
+<p>只需要指定目标操作系统的平台和处理器架构即可：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">SET CGO_ENABLED=0  // 禁用CGO</span><br><span class="line">SET GOOS=linux  // 目标平台是linux</span><br><span class="line">SET GOARCH=amd64  // 目标处理器架构是amd64</span><br></pre></td></tr></table></figure>
+<p><em>使用了cgo的代码是不支持跨平台编译的</em></p>
+<p>然后再执行<code>go build</code>命令，得到的就是能够在Linux平台运行的可执行文件了。</p>
+<p>Mac 下编译 Linux 和 Windows平台 64位 可执行程序：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build</span><br><span class="line">CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build</span><br></pre></td></tr></table></figure>
+<p>Linux 下编译 Mac 和 Windows 平台64位可执行程序：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build</span><br><span class="line">CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build</span><br></pre></td></tr></table></figure>
+<p>Windows下编译Mac平台64位可执行程序：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">SET CGO_ENABLED=0</span><br><span class="line">SET GOOS=darwin</span><br><span class="line">SET GOARCH=amd64</span><br><span class="line">go build</span><br></pre></td></tr></table></figure>
+<p>现在，开启你的Go语言学习之旅吧。人生苦短，let’s Go.</p>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>最后感谢这些文章的帮助：</p>
+<blockquote>
+<p><a href="https://www.liwenzhou.com/posts/Go/install_go_dev/">从零开始搭建Go语言开发环境</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Go</category>
+      </categories>
+      <tags>
+        <tag>Go</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo搭建博客</title>
     <url>/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为发现学习一些东西笔记东一点西一点，所以就想放在一个固定的地方，方便一点，找了一些资料，发现 github pages 和 hexo 可以免费搭建博客了（重点是免费），所以就试着搭建了一个，过程和一些坑都记录下。</p>
@@ -382,255 +631,6 @@
       </categories>
       <tags>
         <tag>next</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Go环境搭建</title>
-    <url>/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录自己的Go的环境搭建</p>
-<p>安装Go语言</p>
-<p>官网地址：<a href="https://golang.org/%EF%BC%88%E5%9B%BD%E5%A4%96%E7%BD%91%E5%9D%80%EF%BC%8C%E8%A2%AB%E5%A2%99%EF%BC%89">https://golang.org/（国外网址，被墙）</a></p>
-<p>官方镜像：<a href="https://golang.google.cn/">https://golang.google.cn/</a></p>
-<a id="more"></a>
-
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="windouws-安装"><a href="#windouws-安装" class="headerlink" title="windouws 安装"></a>windouws 安装</h3><p>官网下载<a href="https://golang.google.cn/dl/">windows最新安装包</a></p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125142256031.png" alt="image-20210125142256031"></p>
-<p>将上述安装包下载到本地后双击运行安装即可，安装地址自己设置一个就行，建议设置一个一级目录</p>
-<h3 id="Linux-下安装"><a href="#Linux-下安装" class="headerlink" title="Linux 下安装"></a>Linux 下安装</h3><p>如果不是Linux平台敲代码就不需要再Linux安装Go，Go代码可以跨平台编译（详见文章末尾）</p>
-<p>在版本选择界面选择下载Go文件</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget https://golang.google.cn/dl/go1.15.7.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
-<p>解压到<code>/usr/local</code>目录下即可：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo tar -zxvf go1.15.7.linux-amd64.tar.gz -C /usr/local  # 解压</span><br></pre></td></tr></table></figure>
-<h2 id="环境变量：GOROOT和GOPATH"><a href="#环境变量：GOROOT和GOPATH" class="headerlink" title="环境变量：GOROOT和GOPATH"></a>环境变量：GOROOT和GOPATH</h2><p>GOROOT：Go得安装路径</p>
-<p>GOPATH：Go的工作目录路径，保存Go项目代码和第三方依赖（就是自己建个文件用来专门写Go代码的）</p>
-<p>工作目录中建立<code>bin</code>、<code>pkg</code>、<code>src</code>三个目录</p>
-<h3 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h3><p>Go 1.8版本开始，Go会设置一个默认目录，可以根据自己需要在用户变量或系统变量增删</p>
-<img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125164641082.png" alt="image-20210125164641082" style="zoom:80%;">
-
-<p>最后将go安装目录的bin目录和go工作目录的bin目录加入<code>Path</code>变量就可以了，根据自己需要加入系统变量或用户变量</p>
-<img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125164535792.png" alt="image-20210125164535792" style="zoom:80%;">
-
-<p>在cmd中输入<code>go version</code>后出现go的信息表示成功</p>
-<h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h3><p>Liunx有两个文件可以配置变量，其中<code>/etc/profile</code> 是系统变量文件；<code>~/.profile</code>是用户变量根据自己情况选择一个文件，添加如下两行代码：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export GOROOT=/usr/local/go</span><br><span class="line">export PATH=$PATH:$GOROOT/bin</span><br></pre></td></tr></table></figure>
-<p>修改系统变量需要重启生效，修改用户变量可以使用<code>source</code>命令加载文件生效</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">source ~/.profile</span><br></pre></td></tr></table></figure>
-<p>输入<code>go version</code>出现go信息表示成功</p>
-<h3 id="GOPROXY和GO111MODULE"><a href="#GOPROXY和GO111MODULE" class="headerlink" title="GOPROXY和GO111MODULE"></a>GOPROXY和GO111MODULE</h3><p>默认GOPROXY配置是：<code>GOPROXY=https://proxy.golang.org,direct</code>国内访问不到，需要修改</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">go env # 查看go环境信息</span><br><span class="line">go env -w GOPROXY=https://goproxy.cn,direct # 设置go镜像</span><br><span class="line">go env -w GO111MODULE=on # 设置gomod</span><br></pre></td></tr></table></figure>
-<h2 id="编辑器VS-Code"><a href="#编辑器VS-Code" class="headerlink" title="编辑器VS Code"></a>编辑器VS Code</h2><p>官网根据自己电脑平台下载相应安装包安装：<a href="https://code.visualstudio.com/Download">https://code.visualstudio.com/Download</a></p>
-<p>左侧菜单栏介绍：</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125161544227.png" alt="image-20210125161544227"></p>
-<p>在扩展里面输入<code>chinese</code>，选择第一个安装中文简体插件</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125161921818.png" alt="image-20210125161921818"></p>
-<p>输入Go安装Go插件，让vs支持Go开发</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125162041573.png" alt="image-20210125162041573"></p>
-<p>中文插件和Go插件重启vs后生效</p>
-<p>安装Go开发插件，在vs按<code>Shift+Ctrl+p</code>输入<code>go:install/update tools</code>点击确定，选择全选，点击确定</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125162530646.png" alt="image-20210125162530646"></p>
-<p>等待安装完成就可以了</p>
-<h3 id="windows下切换cmd为默认终端"><a href="#windows下切换cmd为默认终端" class="headerlink" title="windows下切换cmd为默认终端"></a>windows下切换cmd为默认终端</h3><p>打开vs终端后显示如红框内，则点击下拉框，选择默认shell，然后选择cmd，重启终端；</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125163548882.png" alt="image-20210125163548882"></p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125163639207.png" alt="image-20210125163639207"></p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125163702150.png" alt="image-20210125163702150"></p>
-<p>终端没有下拉框的话可以按下<code>Shift+Ctrl+P</code>输入<code>shell</code>选择默认shell也可以</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125164015495.png" alt="image-20210125164015495"></p>
-<h2 id="第一个Go程序"><a href="#第一个Go程序" class="headerlink" title="第一个Go程序"></a>第一个Go程序</h2><p>在<code>src</code>目录下新建一个<code>hello</code>文件夹，里面新建<code>mian.go</code>文件，文件中输入：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;Hello World!&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>终端输入：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 如果在hello目录下执行：</span></span><br><span class="line"><span class="keyword">go</span> build</span><br><span class="line"><span class="comment">// 或者在其他目录执行以下命令：</span></span><br><span class="line"><span class="keyword">go</span> build hello</span><br></pre></td></tr></table></figure>
-<p>编译后会生成<code>hello.exe</code>文件，终端执行改文件</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">G:\goproject\src\lianxi\hello&gt;hello.exe</span><br><span class="line">Hello World!</span><br></pre></td></tr></table></figure>
-<p>可以用<code>-o</code>指定编译后的的文件名字：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 默认与项目同名，可用-o参数修改</span></span><br><span class="line"><span class="keyword">go</span> build -o heiheihei.exe</span><br></pre></td></tr></table></figure>
-<h2 id="跨平台编译"><a href="#跨平台编译" class="headerlink" title="跨平台编译"></a>跨平台编译</h2><p>默认我们<code>go build</code>的可执行文件都是当前操作系统可执行的文件，如果我想在windows下编译一个linux下可执行文件，那需要怎么做呢？</p>
-<p>只需要指定目标操作系统的平台和处理器架构即可：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">SET CGO_ENABLED=0  // 禁用CGO</span><br><span class="line">SET GOOS=linux  // 目标平台是linux</span><br><span class="line">SET GOARCH=amd64  // 目标处理器架构是amd64</span><br></pre></td></tr></table></figure>
-<p><em>使用了cgo的代码是不支持跨平台编译的</em></p>
-<p>然后再执行<code>go build</code>命令，得到的就是能够在Linux平台运行的可执行文件了。</p>
-<p>Mac 下编译 Linux 和 Windows平台 64位 可执行程序：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build</span><br><span class="line">CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build</span><br></pre></td></tr></table></figure>
-<p>Linux 下编译 Mac 和 Windows 平台64位可执行程序：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build</span><br><span class="line">CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build</span><br></pre></td></tr></table></figure>
-<p>Windows下编译Mac平台64位可执行程序：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">SET CGO_ENABLED=0</span><br><span class="line">SET GOOS=darwin</span><br><span class="line">SET GOARCH=amd64</span><br><span class="line">go build</span><br></pre></td></tr></table></figure>
-<p>现在，开启你的Go语言学习之旅吧。人生苦短，let’s Go.</p>
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>最后感谢这些文章的帮助：</p>
-<blockquote>
-<p><a href="https://www.liwenzhou.com/posts/Go/install_go_dev/">从零开始搭建Go语言开发环境</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Go</category>
-      </categories>
-      <tags>
-        <tag>Go</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Go文件操作</title>
-    <url>/2021/01/27/Go%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go文件操作</p>
-<a id="more"></a>
-
-<h2 id="打开、关闭文件"><a href="#打开、关闭文件" class="headerlink" title="打开、关闭文件"></a>打开、关闭文件</h2><p><code>os.Open()</code> 函数可以打开一个文件，返回 <code>*File</code> 和 <code>err</code> 。对得到的文件实例调用 <code>close()</code> 方法关闭文件</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 只读方式打开一个文件</span></span><br><span class="line">    file, err := os.Open(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;open &#x27;./main.go&#x27; file failed!, err:&quot;</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 关闭文件</span></span><br><span class="line">    file.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h2><h3 id="file-Read"><a href="#file-Read" class="headerlink" title="file.Read()"></a>file.Read()</h3><h4 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h4><p>Read方法定义：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f *file)</span> <span class="title">Read</span><span class="params">(b []<span class="keyword">byte</span>)</span> <span class="params">(n <span class="keyword">int</span>, err error)</span></span></span><br></pre></td></tr></table></figure>
-<p>它接受一个切片字节，返回读取到的字节数和可能的错误，读到文件末尾时会返回 <code>0</code> 和 <code>io.EOF</code> 。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 只读方式打开一个文件</span></span><br><span class="line">	file, err := os.Open(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open &#x27;./main.go&#x27; file failed!, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 关闭文件</span></span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	<span class="comment">// 使用Read方法读取数据</span></span><br><span class="line">	<span class="keyword">var</span> tmp = <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">128</span>)</span><br><span class="line">    <span class="comment">// 读取file实例的数据放在tmp变量中，返回读取的字节数量n和可能出现的err</span></span><br><span class="line">	n, err := file.Read(tmp)</span><br><span class="line">	<span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;文件读完了&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;read file failed, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="keyword">string</span>(tmp[:n]))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="循环读取"><a href="#循环读取" class="headerlink" title="循环读取"></a>循环读取</h4><p>使用for循环读取文件中的所有数据：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 只读方式打开一个文件，返回一个file实例和可能出现的err</span></span><br><span class="line">	file, err := os.Open(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open &#x27;./main.go&#x27; file failed!, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 关闭文件</span></span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	<span class="comment">// 使用Read方法读取数据</span></span><br><span class="line">	<span class="keyword">var</span> tmp = <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">128</span>)</span><br><span class="line">	<span class="keyword">var</span> cont []<span class="keyword">byte</span></span><br><span class="line">	<span class="keyword">for</span> &#123; </span><br><span class="line">		n, err := file.Read(tmp)</span><br><span class="line">		<span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">          	fmt.Println(<span class="string">&quot;文件读完了&quot;</span>)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;read file failed, err:&quot;</span>, err)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		cont = <span class="built_in">append</span>(cont, tmp[:n]...)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="keyword">string</span>(cont))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="bufio读取文件"><a href="#bufio读取文件" class="headerlink" title="bufio读取文件"></a>bufio读取文件</h3><p>bufio在file的基础上封装了一层API，支持更多功能：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 只读方式打开一个文件</span></span><br><span class="line">	file, err := os.Open(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open &#x27;./main.go&#x27; file failed!, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 关闭文件</span></span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	reader := bufio.NewReader(file)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// 读取到ReadString参数后停止，例：&#x27;\n&#x27;，读取到换行停止，也就是按行读取</span></span><br><span class="line">        <span class="comment">// 返回读取到的数据line和可能出现的err</span></span><br><span class="line">		line, err := reader.ReadString(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">		<span class="keyword">if</span> err == io.EOF &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;文件读完了&quot;</span>)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;read file failed, err:&quot;</span>, err)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Print(line)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="ioutil读取整个文件"><a href="#ioutil读取整个文件" class="headerlink" title="ioutil读取整个文件"></a>ioutil读取整个文件</h3><p><code>io/ioutil</code> 包的 <code>ReadFile</code> 方法可以读取完整的文件，只需将文件名字作为参数传入：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// ioutil.ReadFile读取整个文件</span></span><br><span class="line">    cont, err := ioutil.ReadFile(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;read file failed, err:&quot;</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(<span class="keyword">string</span>(cont))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><h3 id="打开文件OpenFile"><a href="#打开文件OpenFile" class="headerlink" title="打开文件OpenFile"></a>打开文件<code>OpenFile</code></h3><p>写入文件因为可能有：目标文件不存在、无权限等情况，所以 <code>os.Open</code> 函数不够</p>
-<p><code>os.OpenFile()</code> 函数可以以指定模式打开文件，实现文件写入操作：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">OpenFile</span><span class="params">(name <span class="keyword">string</span>, flag <span class="keyword">int</span>, perm FileMode)</span> <span class="params">(*File, err)</span></span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
-<p>其中：</p>
-<p><code>name</code>：要打开的文件名 <code>flag</code>：打开文件的模式。 模式有以下几种，<code>perm</code>：文件权限，一个八进制数。r（读）04，w（写）02，x（执行）01。</p>
-<table>
-<thead>
-<tr>
-<th align="left">模式</th>
-<th align="left">含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><code>os.O_WRONLY</code></td>
-<td align="left">只写</td>
-</tr>
-<tr>
-<td align="left"><code>os.O_CREATE</code></td>
-<td align="left">创建文件</td>
-</tr>
-<tr>
-<td align="left"><code>os.O_RDONLY</code></td>
-<td align="left">只读</td>
-</tr>
-<tr>
-<td align="left"><code>os.O_RDWR</code></td>
-<td align="left">读写</td>
-</tr>
-<tr>
-<td align="left"><code>os.O_TRUNC</code></td>
-<td align="left">清空</td>
-</tr>
-<tr>
-<td align="left"><code>os.O_APPEND</code></td>
-<td align="left">追加</td>
-</tr>
-</tbody></table>
-<h3 id="write-写入文件"><a href="#write-写入文件" class="headerlink" title="write 写入文件"></a><code>write</code> 写入文件</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 打开xx.txt文件，模式：文件不存在则创建|只写入|写入时清空目标文件，文件权限为0666</span></span><br><span class="line">	file, err := os.OpenFile(<span class="string">&quot;./xx.txt&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, <span class="number">0666</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	str := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	<span class="comment">// 写入[]byte数据</span></span><br><span class="line">	file.Write([]<span class="keyword">byte</span>(str))</span><br><span class="line">	<span class="comment">// 直接写入字符串</span></span><br><span class="line">	file.WriteString(str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="bufio-NewWriter-写入文件"><a href="#bufio-NewWriter-写入文件" class="headerlink" title="bufio.NewWriter  写入文件"></a><code>bufio.NewWriter</code>  写入文件</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	file, err := os.OpenFile(<span class="string">&quot;./xx.txt&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, <span class="number">0666</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> file.Close()</span><br><span class="line">	writer := bufio.NewWriter(file)</span><br><span class="line">	str := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	<span class="comment">// 将数据写入缓存中</span></span><br><span class="line">	writer.WriteString(str)</span><br><span class="line">	<span class="comment">// 将缓存中的内容写入文件</span></span><br><span class="line">	writer.Flush()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="ioutil-WriteFile-写入文件"><a href="#ioutil-WriteFile-写入文件" class="headerlink" title="ioutil.WriteFile 写入文件"></a><code>ioutil.WriteFile</code> 写入文件</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    str := <span class="string">&quot;hello world&quot;</span></span><br><span class="line">    <span class="comment">// ioutil.WriteFile默认使用：文件不存在则创建|只写入|写入时清空目标文件，模式来写入文件</span></span><br><span class="line">    err := ioutil.WriteFile(<span class="string">&quot;./xx.txt&quot;</span>, []<span class="keyword">byte</span>(str), <span class="number">0666</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;write file failed, err:&quot;</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="文件分割与合并"><a href="#文件分割与合并" class="headerlink" title="文件分割与合并"></a>文件分割与合并</h2><h3 id="大文件分割"><a href="#大文件分割" class="headerlink" title="大文件分割"></a>大文件分割</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// chunkSize:文件分割成多大</span></span><br><span class="line"><span class="keyword">const</span> chunkSize = <span class="number">1</span> &lt;&lt; (<span class="number">10</span> * <span class="number">2</span>)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 参数是文件，返回的是文件信息:name,size...(名字，大小等等...)</span></span><br><span class="line">	fileInfo, err := os.Stat(<span class="string">&quot;xx.log&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// num：分割文件个数，math.Ceil：向上取整</span></span><br><span class="line">	num := math.Ceil(<span class="keyword">float64</span>(fileInfo.Size()) / chunkSize)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 以只读模式打开文件，ModePerm：文件权限0777</span></span><br><span class="line">	fi, err := os.OpenFile(<span class="string">&quot;xx.log&quot;</span>, os.O_RDONLY, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> fi.Close()</span><br><span class="line">	b := <span class="built_in">make</span>([]<span class="keyword">byte</span>, chunkSize)</span><br><span class="line">	<span class="keyword">var</span> i <span class="keyword">int64</span> = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> ; i &lt;= <span class="keyword">int64</span>(num); i++ &#123;</span><br><span class="line">		<span class="comment">// 读取chunkSize大小的fi的数据放入b</span></span><br><span class="line">		fi.Seek((i<span class="number">-1</span>)*chunkSize, <span class="number">0</span>)</span><br><span class="line">        <span class="comment">// 当b的长度大于剩余数据长度时，b长度为剩余数据长度</span></span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(b) &gt; <span class="keyword">int</span>(fileInfo.Size()-(i<span class="number">-1</span>)*chunkSize) &#123;</span><br><span class="line">			b = <span class="built_in">make</span>([]<span class="keyword">byte</span>, fileInfo.Size()-(i<span class="number">-1</span>)*chunkSize)</span><br><span class="line">		&#125;</span><br><span class="line">		fi.Read(b)</span><br><span class="line">        <span class="comment">// 把b中的数据写入f，文件名字以: i.log为名</span></span><br><span class="line">		f, err := os.OpenFile(<span class="string">&quot;./&quot;</span>+strconv.Itoa(<span class="keyword">int</span>(i))+<span class="string">&quot;.log&quot;</span>, os.O_CREATE|os.O_WRONLY, os.ModePerm)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="built_in">panic</span>(err)</span><br><span class="line">		&#125;</span><br><span class="line">        <span class="keyword">defer</span> f.Close()</span><br><span class="line">		f.Write(b)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="文件合并"><a href="#文件合并" class="headerlink" title="文件合并"></a>文件合并</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fii, err := os.OpenFile(<span class="string">&quot;xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="keyword">defer</span> fii.Close()</span><br><span class="line">    <span class="comment">// num：合并文件个数</span></span><br><span class="line">    num := <span class="number">1</span></span><br><span class="line">    <span class="comment">// i.log的数据写入b中，b中的数据以追加的方式加入xx.log中</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= num; i++ &#123;</span><br><span class="line">		f, err := os.OpenFile(<span class="string">&quot;./&quot;</span>+strconv.Itoa(<span class="keyword">int</span>(i))+<span class="string">&quot;.log&quot;</span>, os.O_RDONLY, os.ModePerm)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(err)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		b, err := ioutil.ReadAll(f)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			fmt.Println(err)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		fii.Write(b)</span><br><span class="line">		f.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章的帮助：</p>
-<blockquote>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_file/">Go语言文件操作</a></p>
-<p><a href="https://studygolang.com/articles/2687">golang 大文件分割</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Go</category>
-      </categories>
-      <tags>
-        <tag>Go</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Go日志</title>
-    <url>/2021/02/02/Go%E6%97%A5%E5%BF%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go日志操作</p>
-<a id="more"></a>
-
-<h2 id="标准log库"><a href="#标准log库" class="headerlink" title="标准log库"></a>标准log库</h2><h3 id="log输出"><a href="#log输出" class="headerlink" title="log输出"></a>log输出</h3><p>Go有 <code>fmt.Print</code> 输出，但是使用 <code>log.Print</code> 得话输出自带时间，可以更好帮我们找到出现问题得时间：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">11</span>:<span class="number">54</span>:<span class="number">25</span> hello world</span><br></pre></td></tr></table></figure>
-<h3 id="定制log输出"><a href="#定制log输出" class="headerlink" title="定制log输出"></a>定制log输出</h3><p>有了时间，但是我们还想要更多得信息，发生得源代码行号等等，对此 <code>log</code> 提供了可定制化配置，可以定制日志的抬头信息</p>
-<p>可以定义的选项：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Ldate         = <span class="number">1</span> &lt;&lt; <span class="literal">iota</span>     <span class="comment">//日期示例： 2009/01/23</span></span><br><span class="line">    Ltime                         <span class="comment">//时间示例: 01:23:23</span></span><br><span class="line">    Lmicroseconds                 <span class="comment">//毫秒示例: 01:23:23.123123.</span></span><br><span class="line">    Llongfile                     <span class="comment">//绝对路径和行号: /a/b/c/d.go:23</span></span><br><span class="line">    Lshortfile                    <span class="comment">//文件和行号: d.go:23.</span></span><br><span class="line">    LUTC                          <span class="comment">//日期时间转为0时区的</span></span><br><span class="line">    LstdFlags     = Ldate | Ltime <span class="comment">//Go提供的标准抬头信息</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>现在定制：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
-<h3 id="日志前缀"><a href="#日志前缀" class="headerlink" title="日志前缀"></a>日志前缀</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Prefix 查看前缀</span></span><br><span class="line"><span class="comment">// SetPrefix 设置前缀</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Prefix</span> 查看前缀<span class="params">()</span> <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetPrefix</span><span class="params">(prefix <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
-<p>最后一个 <code>LstdFlags</code> 是日志前缀，大部分情况项目有很多业务，添加前缀可以区分这些业务：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">【UserCenter】<span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
-<h3 id="日志输出位置"><a href="#日志输出位置" class="headerlink" title="日志输出位置"></a>日志输出位置</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetOutput</span><span class="params">(w io.Writer)</span></span></span><br></pre></td></tr></table></figure>
-<p><code>SetOutput</code> 函数用来设置log的输出目的地</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	log.SetOutput(logFile)</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="创建logger"><a href="#创建logger" class="headerlink" title="创建logger"></a>创建logger</h3><p><code>log</code> 标准库中还提供一个 <code>logger</code> 对象的构造函数— <code>New</code> ，支持我们创建自己的 <code>logger</code> 实例。 <code>New</code> 函数签名如下：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(out io.Writer, prefix <span class="keyword">string</span>, flag <span class="keyword">int</span>)</span> *<span class="title">Logger</span></span></span><br></pre></td></tr></table></figure>
-<p>其中，<code>out</code> 设置日志信息写入的目的地。<code>prefix</code> 会添加到生成的每一条日志前面的前缀。<code>flag</code> 定义日志的属性（时间、文件等等）。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	logger := log.New(logFile, <span class="string">&quot;&quot;</span>, log.Ldate|log.Ltime|log.Llongfile)</span><br><span class="line">	logger.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章得帮助：</p>
-<blockquote>
-<p><a href="https://www.jianshu.com/p/d634316a9487">Go log 日志</a></p>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_log/">Go语言标准库log介绍</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Go</category>
-      </categories>
-      <tags>
-        <tag>日志</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Go操作Mysql</title>
-    <url>/2021/02/02/Go%E6%93%8D%E4%BD%9CMySQL/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>MySQL是业界常用的关系型数据库，记录Go如何操作MySQL数据库</p>
-<a id="more"></a>
-
-<h2 id="连接MySQL"><a href="#连接MySQL" class="headerlink" title="连接MySQL"></a>连接MySQL</h2><p>Go语言中的 <code>database/sql</code> 包提供了 <code>SQL</code> 或类 <code>SQL</code> 数据库的泛用接口，并需要（至少一个）数据库驱动，一般使用第三方<a href="https://github.com/go-sql-driver/mysql">MySQL驱动</a></p>
-<h3 id="下载驱动"><a href="#下载驱动" class="headerlink" title="下载驱动"></a>下载驱动</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">go</span> get -u github.com/<span class="keyword">go</span>-sql-driver/mysql</span><br></pre></td></tr></table></figure>
-<h3 id="使用驱动"><a href="#使用驱动" class="headerlink" title="使用驱动"></a>使用驱动</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Open</span><span class="params">(driverName, dataSourceName <span class="keyword">string</span>)</span> <span class="params">(*DB, error)</span></span></span><br></pre></td></tr></table></figure>
-<p><code>Open</code> 函数打开一个 <code>driverName</code> 指定的数据库，<code>dataSourceName</code> 指定数据源，模式是：</p>
-<p><code>(数据库)账号:密码@连接方式(ip地址:端口号)/数据库名</code> </p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;database/sql&quot;</span></span><br><span class="line">	_ <span class="string">&quot;github.com/go-sql-driver/mysql&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	db, err := sql.Open(<span class="string">&quot;mysql&quot;</span>, <span class="string">&quot;user:password@tcp(127.0.0.1:3306)/dbname&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> db.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="初始化连接"><a href="#初始化连接" class="headerlink" title="初始化连接"></a>初始化连接</h3><p><code>Open</code> 函数只检查输入的数据源格式是否正确，无法确认输入的数据源是否存在（类似注册账号时填写的邮件，它只判断你填写的是否是：<code>xx@qq.com</code> 这类的格式，不知道你输入的账号是否存在），所以我们用 <code>Ping</code> 方法来确认：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;database/sql&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line"></span><br><span class="line">	_ <span class="string">&quot;github.com/go-sql-driver/mysql&quot;</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">// 全局db</span></span><br><span class="line"><span class="keyword">var</span> db *sql.DB</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">InitDB</span><span class="params">()</span> <span class="params">(err error)</span></span> &#123;</span><br><span class="line">	db, err = sql.Open(<span class="string">&quot;mysql&quot;</span>, <span class="string">&quot;user:password@tcp(127.0.0.1:3306)/dbname&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> db.Close()</span><br><span class="line">    <span class="comment">// 尝试与数据库建立连接(校验数据源是否存在)</span></span><br><span class="line">	err = db.Ping()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123; </span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	err := InitDB()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;init db failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="连接配置"><a href="#连接配置" class="headerlink" title="连接配置"></a>连接配置</h3><h4 id="最大连接数"><a href="#最大连接数" class="headerlink" title="最大连接数"></a>最大连接数</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">SetMaxOpenConns</span><span class="params">(n <span class="keyword">int</span>)</span></span></span><br></pre></td></tr></table></figure>
-<p><code>SetMaxOpenConns</code> 设置与数据库建立连接的最大数目。如果n&gt;0且小于最大闲置连接数，会将最大闲置连接数减小到匹配最大开启连接数的限制。如果n&lt;=0，不会限制最大开启连接数，默认为0 (无限制)</p>
-<h4 id="最大闲置数"><a href="#最大闲置数" class="headerlink" title="最大闲置数"></a>最大闲置数</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">SetMaxIdleConns</span><span class="params">(n <span class="keyword">int</span>)</span></span></span><br></pre></td></tr></table></figure>
-<p><code>SetMaxIdleConns</code> 设置连接池中最大闲置连接数。如果n大于最大连接数，则新的最大闲置连接数会减小到匹配最大开启连接数的闲置。如果n&lt;=0，不会保留闲置连接。</p>
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章的帮助：</p>
-<blockquote>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_mysql/">Go语言操作MySQL</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>mysql</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Go操作Redis</title>
-    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
-<a id="more"></a>
-
-<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
-<blockquote>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Go</category>
-      </categories>
-      <tags>
-        <tag>redis</tag>
       </tags>
   </entry>
 </search>
