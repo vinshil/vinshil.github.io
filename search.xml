@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Go操作Redis</title>
+    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
+<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
+<blockquote>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Go</category>
+      </categories>
+      <tags>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Go操作Mysql</title>
     <url>/2021/02/02/Go%E6%93%8D%E4%BD%9CMySQL/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>MySQL是业界常用的关系型数据库，记录Go如何操作MySQL数据库</p>
-<a id="more"></a>
-
 <h2 id="连接MySQL"><a href="#连接MySQL" class="headerlink" title="连接MySQL"></a>连接MySQL</h2><p>Go语言中的 <code>database/sql</code> 包提供了 <code>SQL</code> 或类 <code>SQL</code> 数据库的泛用接口，并需要（至少一个）数据库驱动，一般使用第三方<a href="https://github.com/go-sql-driver/mysql">MySQL驱动</a></p>
 <h3 id="下载驱动"><a href="#下载驱动" class="headerlink" title="下载驱动"></a>下载驱动</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">go</span> get -u github.com/<span class="keyword">go</span>-sql-driver/mysql</span><br></pre></td></tr></table></figure>
 <h3 id="使用驱动"><a href="#使用驱动" class="headerlink" title="使用驱动"></a>使用驱动</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Open</span><span class="params">(driverName, dataSourceName <span class="keyword">string</span>)</span> <span class="params">(*DB, error)</span></span></span><br></pre></td></tr></table></figure>
@@ -31,30 +46,51 @@
       </tags>
   </entry>
   <entry>
-    <title>Go操作Redis</title>
-    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
-<a id="more"></a>
+    <title>Go日志</title>
+    <url>/2021/02/02/Go%E6%97%A5%E5%BF%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go日志操作</p>
+<h2 id="标准log库"><a href="#标准log库" class="headerlink" title="标准log库"></a>标准log库</h2><h3 id="log输出"><a href="#log输出" class="headerlink" title="log输出"></a>log输出</h3><p>Go有 <code>fmt.Print</code> 输出，但是使用 <code>log.Print</code> 得话输出自带时间，可以更好帮我们找到出现问题得时间：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">11</span>:<span class="number">54</span>:<span class="number">25</span> hello world</span><br></pre></td></tr></table></figure>
+<h3 id="定制log输出"><a href="#定制log输出" class="headerlink" title="定制log输出"></a>定制log输出</h3><p>有了时间，但是我们还想要更多得信息，发生得源代码行号等等，对此 <code>log</code> 提供了可定制化配置，可以定制日志的抬头信息</p>
+<p>可以定义的选项：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Ldate         = <span class="number">1</span> &lt;&lt; <span class="literal">iota</span>     <span class="comment">//日期示例： 2009/01/23</span></span><br><span class="line">    Ltime                         <span class="comment">//时间示例: 01:23:23</span></span><br><span class="line">    Lmicroseconds                 <span class="comment">//毫秒示例: 01:23:23.123123.</span></span><br><span class="line">    Llongfile                     <span class="comment">//绝对路径和行号: /a/b/c/d.go:23</span></span><br><span class="line">    Lshortfile                    <span class="comment">//文件和行号: d.go:23.</span></span><br><span class="line">    LUTC                          <span class="comment">//日期时间转为0时区的</span></span><br><span class="line">    LstdFlags     = Ldate | Ltime <span class="comment">//Go提供的标准抬头信息</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>现在定制：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
+<h3 id="日志前缀"><a href="#日志前缀" class="headerlink" title="日志前缀"></a>日志前缀</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Prefix 查看前缀</span></span><br><span class="line"><span class="comment">// SetPrefix 设置前缀</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Prefix</span> 查看前缀<span class="params">()</span> <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetPrefix</span><span class="params">(prefix <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p>最后一个 <code>LstdFlags</code> 是日志前缀，大部分情况项目有很多业务，添加前缀可以区分这些业务：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">【UserCenter】<span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
+<h3 id="日志输出位置"><a href="#日志输出位置" class="headerlink" title="日志输出位置"></a>日志输出位置</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetOutput</span><span class="params">(w io.Writer)</span></span></span><br></pre></td></tr></table></figure>
+<p><code>SetOutput</code> 函数用来设置log的输出目的地</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	log.SetOutput(logFile)</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="创建logger"><a href="#创建logger" class="headerlink" title="创建logger"></a>创建logger</h3><p><code>log</code> 标准库中还提供一个 <code>logger</code> 对象的构造函数— <code>New</code> ，支持我们创建自己的 <code>logger</code> 实例。 <code>New</code> 函数签名如下：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(out io.Writer, prefix <span class="keyword">string</span>, flag <span class="keyword">int</span>)</span> *<span class="title">Logger</span></span></span><br></pre></td></tr></table></figure>
+<p>其中，<code>out</code> 设置日志信息写入的目的地。<code>prefix</code> 会添加到生成的每一条日志前面的前缀。<code>flag</code> 定义日志的属性（时间、文件等等）。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	logger := log.New(logFile, <span class="string">&quot;&quot;</span>, log.Ldate|log.Ltime|log.Llongfile)</span><br><span class="line">	logger.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
+
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章得帮助：</p>
 <blockquote>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
+<p><a href="https://www.jianshu.com/p/d634316a9487">Go log 日志</a></p>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_log/">Go语言标准库log介绍</a></p>
 </blockquote>
 ]]></content>
       <categories>
         <category>Go</category>
       </categories>
       <tags>
-        <tag>redis</tag>
+        <tag>日志</tag>
       </tags>
   </entry>
   <entry>
     <title>Go文件操作</title>
     <url>/2021/01/27/Go%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go文件操作</p>
-<a id="more"></a>
-
 <h2 id="打开、关闭文件"><a href="#打开、关闭文件" class="headerlink" title="打开、关闭文件"></a>打开、关闭文件</h2><p><code>os.Open()</code> 函数可以打开一个文件，返回 <code>*File</code> 和 <code>err</code> 。对得到的文件实例调用 <code>close()</code> 方法关闭文件</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 只读方式打开一个文件</span></span><br><span class="line">    file, err := os.Open(<span class="string">&quot;./main.go&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;open &#x27;./main.go&#x27; file failed!, err:&quot;</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 关闭文件</span></span><br><span class="line">    file.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h2><h3 id="file-Read"><a href="#file-Read" class="headerlink" title="file.Read()"></a>file.Read()</h3><h4 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h4><p>Read方法定义：</p>
@@ -123,47 +159,120 @@
       </tags>
   </entry>
   <entry>
-    <title>Go日志</title>
-    <url>/2021/02/02/Go%E6%97%A5%E5%BF%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go日志操作</p>
-<a id="more"></a>
+    <title>Hexo搭建博客</title>
+    <url>/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为发现学习一些东西笔记东一点西一点，所以就想放在一个固定的地方，方便一点，找了一些资料，发现 github pages 和 hexo 可以免费搭建博客了（重点是免费），所以就试着搭建了一个，过程和一些坑都记录下。</p>
+<h2 id="Github-Pages"><a href="#Github-Pages" class="headerlink" title="Github Pages"></a>Github Pages</h2><p> GitHub Pages 是一个静态页面搭建托管服务，开搭。如果没有github账号去 <a href="https://github.com/">注册</a> 一个，注册了的</p>
+<p>就点击右上角的+号选择 New repository 来建立仓库。在（仓库名）repository name中必须填（重点）：username.github.io 必须是你的github账号名字+github+io。这是固定的格式，Description 是对仓库的说明可以写：xxx的博客，个人博客之类的。仓库选择公开，不公开不能使用github的pages功能，我已经踩过坑了。差不多就是下面这样：</p>
+<img src="https://i.loli.net/2021/02/07/rZUIma4Pji6bxGz.png" alt="image-20210117033559349" style="zoom:50%;">
 
-<h2 id="标准log库"><a href="#标准log库" class="headerlink" title="标准log库"></a>标准log库</h2><h3 id="log输出"><a href="#log输出" class="headerlink" title="log输出"></a>log输出</h3><p>Go有 <code>fmt.Print</code> 输出，但是使用 <code>log.Print</code> 得话输出自带时间，可以更好帮我们找到出现问题得时间：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">11</span>:<span class="number">54</span>:<span class="number">25</span> hello world</span><br></pre></td></tr></table></figure>
-<h3 id="定制log输出"><a href="#定制log输出" class="headerlink" title="定制log输出"></a>定制log输出</h3><p>有了时间，但是我们还想要更多得信息，发生得源代码行号等等，对此 <code>log</code> 提供了可定制化配置，可以定制日志的抬头信息</p>
-<p>可以定义的选项：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Ldate         = <span class="number">1</span> &lt;&lt; <span class="literal">iota</span>     <span class="comment">//日期示例： 2009/01/23</span></span><br><span class="line">    Ltime                         <span class="comment">//时间示例: 01:23:23</span></span><br><span class="line">    Lmicroseconds                 <span class="comment">//毫秒示例: 01:23:23.123123.</span></span><br><span class="line">    Llongfile                     <span class="comment">//绝对路径和行号: /a/b/c/d.go:23</span></span><br><span class="line">    Lshortfile                    <span class="comment">//文件和行号: d.go:23.</span></span><br><span class="line">    LUTC                          <span class="comment">//日期时间转为0时区的</span></span><br><span class="line">    LstdFlags     = Ldate | Ltime <span class="comment">//Go提供的标准抬头信息</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>现在定制：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
-<h3 id="日志前缀"><a href="#日志前缀" class="headerlink" title="日志前缀"></a>日志前缀</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Prefix 查看前缀</span></span><br><span class="line"><span class="comment">// SetPrefix 设置前缀</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Prefix</span> 查看前缀<span class="params">()</span> <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetPrefix</span><span class="params">(prefix <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
-<p>最后一个 <code>LstdFlags</code> 是日志前缀，大部分情况项目有很多业务，添加前缀可以区分这些业务：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">【UserCenter】<span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
-<h3 id="日志输出位置"><a href="#日志输出位置" class="headerlink" title="日志输出位置"></a>日志输出位置</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetOutput</span><span class="params">(w io.Writer)</span></span></span><br></pre></td></tr></table></figure>
-<p><code>SetOutput</code> 函数用来设置log的输出目的地</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	log.SetOutput(logFile)</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="创建logger"><a href="#创建logger" class="headerlink" title="创建logger"></a>创建logger</h3><p><code>log</code> 标准库中还提供一个 <code>logger</code> 对象的构造函数— <code>New</code> ，支持我们创建自己的 <code>logger</code> 实例。 <code>New</code> 函数签名如下：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(out io.Writer, prefix <span class="keyword">string</span>, flag <span class="keyword">int</span>)</span> *<span class="title">Logger</span></span></span><br></pre></td></tr></table></figure>
-<p>其中，<code>out</code> 设置日志信息写入的目的地。<code>prefix</code> 会添加到生成的每一条日志前面的前缀。<code>flag</code> 定义日志的属性（时间、文件等等）。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	logger := log.New(logFile, <span class="string">&quot;&quot;</span>, log.Ldate|log.Ltime|log.Llongfile)</span><br><span class="line">	logger.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后来自己电脑上，我的电脑是win 10 的</p>
+<p>首先电脑上先安装Git，这是一个在GitHub上拉取资源和上传资源的工具，没有的可以自己在 <a href="https://git-scm.com/downloads">下载</a> 安装下，如果想了解安装的细节的话可以看看廖雪峰老师的 <a href="https://www.liaoxuefeng.com/wiki/896043488029600/896067074338496">Git安装教程</a></p>
+<img src="https://i.loli.net/2021/02/07/K7tqHxAV94e8iQF.png" alt="image-20210117033808505" style="zoom:50%;">
+
+<p>鼠标右键打开Git Bash Here ，或者在菜单栏搜索Git Bash打开也可以，设置user.name和user.email配置：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;你的GitHub用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
+<p>生成ssh密钥连接本地和GitHub：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
+<p>然后打开在 C:\Users\Administrator.ssh 文件夹中的 id_rsa.pub，复制全部内容，登录GitHub，点击右上角人物头像点击settings设置界面，</p>
+<img src="https://i.loli.net/2021/02/07/MAmvdqBiGepOZPj.png" alt="image-20210117033957541.png" style="zoom:40%;">
+
+<p>然后选择SSH这个，再点击New SSH key加上密钥，写上这个密钥的说明，例如：家里的笔记本，台式电脑等，不然密钥多了你会不知道哪个是哪个，复制的内容贴在下面框里就好了，然后点击Add SSH key就好了。</p>
+<img src="https://i.loli.net/2021/02/07/6OWHEg9N57Kiv4k.png" alt="image-20210117034216610" style="zoom:50%;">
+
+<p>在Git Bash中检查是否设置密钥成功, 输入<code>ssh git@github.com </code>，如下图就说明成功了。</p>
+<p><img src="https://i.loli.net/2021/02/07/Ohvxuk8ZpGJqSU9.png" alt="image-20210117034437859"></p>
+<h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>hexo基于node，<a href="https://nodejs.org/en/download/">下载安装</a> node安装包，node包含npm，默认安装好后检查是否安装成功，在Git Bash输入（记得关掉重启下Bash，不然不生效）：node -v ，npm -v</p>
+<p><img src="https://i.loli.net/2021/02/07/WTNMtkHZFpl4SOJ.png" alt="image-20210117034630578"></p>
+<p>到这里安装hexo的环境都搭建好了</p>
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>​        在电脑里面创建一个一个文件夹，可以命名为Blog之类的，我们的Hexo项目都放这个文件里面。进入文件夹，右键打开Git Bash，这样我们启动Bash后就直接在Blog文件下了</p>
+<img src="https://i.loli.net/2021/02/07/CWUg7wObeqkanT3.png" alt="20210117221924" style="zoom:50%;">
+
+<p>打开后是这样的：</p>
+<img src="https://i.loli.net/2021/02/07/sp8hx3gXJuI4m2t.png" alt="20210117020241448" style="zoom:50%;">
+
+<p>用npm安装hexo, </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install -g hexo-cli # 注意在Blog文件夹中输入，安装后输入hexo -v报错：Cannot find module &#x27;hexo&#x27; from &#x27;&#x27;的话使用下面这条命令</span><br><span class="line">npm install hexo-util --save # 上面安装没报错的话不用这条命令</span><br></pre></td></tr></table></figure>
+<p>注意：我这里报错提示：系统禁止运行脚本，如果你没有的话跳过这步</p>
+<img src="https://i.loli.net/2021/02/07/hKuEgZAHzvS3QVq.png" alt="image-20210118180357726" style="zoom:40%;">
+
+<p>然后点击左边的开发者选择，右边下滑找到PowerShell，勾选允许本地运行PowerShell脚本，点击应用，然后把输入界面重新打开一下，让设置生效就行了</p>
+<img src="https://i.loli.net/2021/02/07/XCnHIeOpKA3mjtb.png" alt="image-20210118180450626" style="zoom:40%;">
 
 
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章得帮助：</p>
-<blockquote>
-<p><a href="https://www.jianshu.com/p/d634316a9487">Go log 日志</a></p>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_log/">Go语言标准库log介绍</a></p>
+
+<p>好了后就可以初始化我们的博客了</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo init # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
+<p>好了以后就可以启动hexo服务了</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo g #生产静态页面，默认是4000端口，如果被占可以指定，如：hexo server -p 5000</span><br><span class="line">hexo s #本地启动hexo服务</span><br></pre></td></tr></table></figure>
+<p>然后在网址上输入localhost:4000（端口号如果改了的话这里也要改）就可以看到了自己的博客了，到这里博客在本地就搭建好了，但是只能现在这台电脑看的到，所以要用GitHub托管，让其他电脑也看的到</p>
+<h2 id="Github-管理博客"><a href="#Github-管理博客" class="headerlink" title="Github 管理博客"></a>Github 管理博客</h2><h3 id="项目上传GitHub"><a href="#项目上传GitHub" class="headerlink" title="项目上传GitHub"></a>项目上传GitHub</h3><p>​        GitHub主线用来放博客项目，用来以后换电脑后可以拉取项目直接写博客，不用重新在本地一点一点搭建，服务托管在分支</p>
+<p>打开Blog文件夹里面的_config.yml文件。翻到最后</p>
+<ol>
+<li>type后面填git</li>
+<li>repo后面填仓库地址</li>
+<li>branch后面填分支名字</li>
+</ol>
+<p><img src="https://i.loli.net/2021/02/07/S8QMeYUu3IXmTjg.png" alt="image-20210117021949987"></p>
+<p>在Git Bash中下载git</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
+<p>安装好就把准备好的项目上传GitHub主线</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone &#x27;GitHub项目地址&#x27; # 复制GitHub项目到本地，本地会有个与GitHub项目名文件</span><br></pre></td></tr></table></figure>
+<img src="https://i.loli.net/2021/02/07/ce4AXr6ShBjzURY.png" alt="image-20210118181529871" style="zoom:80%;">
+
+<p>然后把搭建的博客项目上传到GitHub上去</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git add * # 新增文件放入提交缓存中</span><br><span class="line">git commit  -m  &quot;提交说明&quot; # 就是对这次提交的说明</span><br><span class="line">git push -u origin main # 本地项目提交到GitHub主线上，GitHub上会少几个文件，不过不要紧</span><br></pre></td></tr></table></figure>
+<p>好了之后GitHub上面就有项目了，以后换电脑就拉取项目直接写博客就行了</p>
+<h3 id="GitHub托管博客"><a href="#GitHub托管博客" class="headerlink" title="GitHub托管博客"></a>GitHub托管博客</h3><p>博客部署到GitHub上了</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这是hexo g,hexo d的简写，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d 项目部署到GitHub，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 文件修改后要先生成文件，再部署，也就是要先hexo g，后hexo d</span></span><br><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
+<p>推送完在去GitHub项目中设置Pages功能，先登录GitHub，进去博客项目，点击右边的Settings</p>
+<img src="https://i.loli.net/2021/02/07/vfHaS6hdEtlUMzc.png" alt="image-20210118172021785" style="zoom:50%;">
+
+<p>下滑找到GitHub Pages，把branch设置成我们在_config.yml上写的分支名字。</p>
+<img src="https://i.loli.net/2021/02/07/kHDugOBtViEz4xM.png" alt="image-20210118172312679" style="zoom:50%;">
+
+<p>好了，打开你的 username.github.io 看看吧</p>
+<h4 id="hexo命令："><a href="#hexo命令：" class="headerlink" title="hexo命令："></a>hexo命令：</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo n &quot;博客&quot;			# 新建博客文章，在Blog\source\_posts文件夹中</span><br><span class="line">hexo g 				 # 生成静态页面</span><br><span class="line">hexo s 			 	 # 本地启动hexo服务</span><br><span class="line">hexo d 				 # 推送到GitHub</span><br><span class="line"></span><br><span class="line">hexo server -p 5000  # 指定端口</span><br><span class="line">hexo clean 			 # 清理缓存，若是网页正常情况下可以忽略这条命令</span><br></pre></td></tr></table></figure>
+<h4 id="博客网址标题等修改"><a href="#博客网址标题等修改" class="headerlink" title="博客网址标题等修改"></a><a href="https://hexo.io/zh-cn/docs/configuration">博客网址标题等修改</a></h4><h4 id="博客添加图片"><a href="#博客添加图片" class="headerlink" title="博客添加图片"></a>博客添加图片</h4><h5 id="使用图片插件"><a href="#使用图片插件" class="headerlink" title="使用图片插件"></a>使用图片插件</h5><p>先去项目中_config.yml文件中把post_asset_folder这个选择设为true</p>
+<p><img src="https://i.loli.net/2021/02/07/7bgI3kDfFXp19EV.png" alt="image-20210120163629843"></p>
+<p>然后在blog文件夹中下载插件：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-asset-image --save</span><br></pre></td></tr></table></figure>
+<p>安装好了以后，在用 hexo n “xxx” 新建博客时，在/source/_posts文件中除了会有 xxx.md的博客文件还会有一个与博客同名文件夹，博客图片保存在同名文件夹内，使用时在xxxx.md中按照markdown的格式引入图片</p>
+<ul>
+<li><strong>编辑器写博客</strong></li>
+</ul>
+<p>在需要图片的地方使用下面这两种方法都行，下面那个就是可以缩小图片，style里面那个就是说图片缩小50%后再显示。</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![<span class="string">描述</span>](<span class="link">xxx/图片名字.png</span>)</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;xxx/图片名字.png&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;图片无法显示时的替代信息&quot;</span> <span class="attr">style</span>=<span class="string">&quot;zoom:50%;&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>用Typora写博客</strong></li>
+</ul>
+<p>Typora有保存图片位置的设置，我们把图片保存地址设置为同位置的同名文件夹就行了</p>
+<p>点击左上角文件，下拉选项选偏好设置</p>
+<img src="https://i.loli.net/2021/02/07/GR1YQr3BeXA8xnc.png" alt="image-20210120165604892" style="zoom: 80%;">
+
+<p>左边点击图像，然后在插入图片地址处点击下拉，选择复制到指定路径</p>
+<p><img src="https://i.loli.net/2021/02/07/U8uI5d24oEb9mei.png" alt="image-20210120165805721"></p>
+<p>在下面输入框中输入：./${filename} 你截图粘贴的时候就会把图片直接保存在博客同位置的同名文件夹中了，下面这些图片设置选项前三个最好勾上，其他看需求是否需要。</p>
+<p><img src="https://i.loli.net/2021/02/07/euvxgd26LoCTJaO.png" alt="image-20210120165928154"></p>
+<p>好了，现在博客部署到GitHub上就会显示图片了。</p>
+<h3 id="更换博客主题"><a href="#更换博客主题" class="headerlink" title="更换博客主题"></a>更换博客主题</h3><p>将自己喜欢的主题下载到themes文件夹中，这里就是放主题的，我选的是<a href="https://github.com/theme-next/hexo-theme-next">next主题</a>，你也可以选其他喜欢的主题</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<p>修改_config.yml配置，把theme字段配置为新下载的主题：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
+<p>本地查看下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 清理缓存</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成静态页面</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 本地启动hexo服务</span></span><br><span class="line">hexo clean</span><br><span class="line">hexo g </span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<p>我看到<a href="https://github.com/jerryc127/hexo-theme-butterfly">butterfly主题</a>的时候又感觉这个好看，换了这个，主题设置可以参考 <a href="https://xiabor.com/">MuJin’s Blog</a> 大佬的博客</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载主题</span></span><br><span class="line">git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/Butterfly</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装主题依赖</span></span><br><span class="line">npm install hexo-renderer-pug hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><blockquote>
+<p>最后感觉这些文章的帮助：</p>
+<p><a href="https://blog.csdn.net/sinat_37781304/article/details/82729029">hexo史上最全搭建教程</a></p>
 </blockquote>
 ]]></content>
       <categories>
-        <category>Go</category>
+        <category>博客</category>
       </categories>
       <tags>
-        <tag>日志</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -173,10 +282,8 @@
 <p>安装Go语言</p>
 <p>官网地址：<a href="https://golang.org/%EF%BC%88%E5%9B%BD%E5%A4%96%E7%BD%91%E5%9D%80%EF%BC%8C%E8%A2%AB%E5%A2%99%EF%BC%89">https://golang.org/（国外网址，被墙）</a></p>
 <p>官方镜像：<a href="https://golang.google.cn/">https://golang.google.cn/</a></p>
-<a id="more"></a>
-
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="windouws-安装"><a href="#windouws-安装" class="headerlink" title="windouws 安装"></a>windouws 安装</h3><p>官网下载<a href="https://golang.google.cn/dl/">windows最新安装包</a></p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125142256031.png" alt="image-20210125142256031"></p>
+<p><img src="https://i.loli.net/2021/02/07/5FaVI1LjzlOgpU7.png" alt="image-20210125142256031"></p>
 <p>将上述安装包下载到本地后双击运行安装即可，安装地址自己设置一个就行，建议设置一个一级目录</p>
 <h3 id="Linux-下安装"><a href="#Linux-下安装" class="headerlink" title="Linux 下安装"></a>Linux 下安装</h3><p>如果不是Linux平台敲代码就不需要再Linux安装Go，Go代码可以跨平台编译（详见文章末尾）</p>
 <p>在版本选择界面选择下载Go文件</p>
@@ -187,10 +294,10 @@
 <p>GOPATH：Go的工作目录路径，保存Go项目代码和第三方依赖（就是自己建个文件用来专门写Go代码的）</p>
 <p>工作目录中建立<code>bin</code>、<code>pkg</code>、<code>src</code>三个目录</p>
 <h3 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h3><p>Go 1.8版本开始，Go会设置一个默认目录，可以根据自己需要在用户变量或系统变量增删</p>
-<img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125164641082.png" alt="image-20210125164641082" style="zoom:80%;">
+<img src="https://i.loli.net/2021/02/07/P8ujqN3gSxlawGU.png" alt="image-20210125164641082" style="zoom:80%;">
 
 <p>最后将go安装目录的bin目录和go工作目录的bin目录加入<code>Path</code>变量就可以了，根据自己需要加入系统变量或用户变量</p>
-<img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125164535792.png" alt="image-20210125164535792" style="zoom:80%;">
+<img src="https://i.loli.net/2021/02/07/OVjMdxSbEDWhgrs.png" alt="image-20210125164535792" style="zoom:80%;">
 
 <p>在cmd中输入<code>go version</code>后出现go的信息表示成功</p>
 <h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h3><p>Liunx有两个文件可以配置变量，其中<code>/etc/profile</code> 是系统变量文件；<code>~/.profile</code>是用户变量根据自己情况选择一个文件，添加如下两行代码：</p>
@@ -202,21 +309,21 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">go env # 查看go环境信息</span><br><span class="line">go env -w GOPROXY=https://goproxy.cn,direct # 设置go镜像</span><br><span class="line">go env -w GO111MODULE=on # 设置gomod</span><br></pre></td></tr></table></figure>
 <h2 id="编辑器VS-Code"><a href="#编辑器VS-Code" class="headerlink" title="编辑器VS Code"></a>编辑器VS Code</h2><p>官网根据自己电脑平台下载相应安装包安装：<a href="https://code.visualstudio.com/Download">https://code.visualstudio.com/Download</a></p>
 <p>左侧菜单栏介绍：</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125161544227.png" alt="image-20210125161544227"></p>
+<p><img src="https://i.loli.net/2021/02/07/uEzcdrfk4aXVM6U.png" alt="image-20210125161544227"></p>
 <p>在扩展里面输入<code>chinese</code>，选择第一个安装中文简体插件</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125161921818.png" alt="image-20210125161921818"></p>
+<p><img src="https://i.loli.net/2021/02/07/t7eSxIHUAX1hP2C.png" alt="image-20210125161921818"></p>
 <p>输入Go安装Go插件，让vs支持Go开发</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125162041573.png" alt="image-20210125162041573"></p>
+<p><img src="https://i.loli.net/2021/02/07/UDJQF9ZPTjKgRCS.png" alt="image-20210125162041573"></p>
 <p>中文插件和Go插件重启vs后生效</p>
 <p>安装Go开发插件，在vs按<code>Shift+Ctrl+p</code>输入<code>go:install/update tools</code>点击确定，选择全选，点击确定</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125162530646.png" alt="image-20210125162530646"></p>
+<p><img src="https://i.loli.net/2021/02/07/KPvt6VwCoO3M29g.png" alt="image-20210125162530646"></p>
 <p>等待安装完成就可以了</p>
 <h3 id="windows下切换cmd为默认终端"><a href="#windows下切换cmd为默认终端" class="headerlink" title="windows下切换cmd为默认终端"></a>windows下切换cmd为默认终端</h3><p>打开vs终端后显示如红框内，则点击下拉框，选择默认shell，然后选择cmd，重启终端；</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125163548882.png" alt="image-20210125163548882"></p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125163639207.png" alt="image-20210125163639207"></p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125163702150.png" alt="image-20210125163702150"></p>
+<p><img src="https://i.loli.net/2021/02/07/o9bGmxIRrkDaQS2.png" alt="image-20210125163548882"></p>
+<p><img src="https://i.loli.net/2021/02/07/1Q6JZGjTysdBIqE.png" alt="image-20210125163639207"></p>
+<p><img src="https://i.loli.net/2021/02/07/bG1wLfi82AMk4In.png" alt="image-20210125163702150"></p>
 <p>终端没有下拉框的话可以按下<code>Shift+Ctrl+P</code>输入<code>shell</code>选择默认shell也可以</p>
-<p><img src="/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20210125164015495.png" alt="image-20210125164015495"></p>
+<p><img src="https://i.loli.net/2021/02/07/GjyXUE9S1BnL6hr.png" alt="image-20210125164015495"></p>
 <h2 id="第一个Go程序"><a href="#第一个Go程序" class="headerlink" title="第一个Go程序"></a>第一个Go程序</h2><p>在<code>src</code>目录下新建一个<code>hello</code>文件夹，里面新建<code>mian.go</code>文件，文件中输入：</p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;Hello World!&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>终端输入：</p>
@@ -250,128 +357,9 @@
       </tags>
   </entry>
   <entry>
-    <title>Hexo搭建博客</title>
-    <url>/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为发现学习一些东西笔记东一点西一点，所以就想放在一个固定的地方，方便一点，找了一些资料，发现 github pages 和 hexo 可以免费搭建博客了（重点是免费），所以就试着搭建了一个，过程和一些坑都记录下。</p>
-<a id="more"></a>
-
-<h2 id="Github-Pages"><a href="#Github-Pages" class="headerlink" title="Github Pages"></a>Github Pages</h2><p> GitHub Pages 是一个静态页面搭建托管服务，开搭。如果没有github账号去 <a href="https://github.com/">注册</a> 一个，注册了的</p>
-<p>就点击右上角的+号选择 New repository 来建立仓库。在（仓库名）repository name中必须填（重点）：username.github.io 必须是你的github账号名字+github+io。这是固定的格式，Description 是对仓库的说明可以写：xxx的博客，个人博客之类的。仓库选择公开，不公开不能使用github的pages功能，我已经踩过坑了。差不多就是下面这样：</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117033559349.png" alt="image-20210117033559349" style="zoom:50%;">
-
-<p>然后来自己电脑上，我的电脑是win 10 的</p>
-<p>首先电脑上先安装Git，这是一个在GitHub上拉取资源和上传资源的工具，没有的可以自己在 <a href="https://git-scm.com/downloads">下载</a> 安装下，如果想了解安装的细节的话可以看看廖雪峰老师的 <a href="https://www.liaoxuefeng.com/wiki/896043488029600/896067074338496">Git安装教程</a></p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117033808505.png" alt="image-20210117033808505" style="zoom:50%;">
-
-<p>鼠标右键打开Git Bash Here ，或者在菜单栏搜索Git Bash打开也可以，设置user.name和user.email配置：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;你的GitHub用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
-<p>生成ssh密钥连接本地和GitHub：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
-<p>然后打开在 C:\Users\Administrator.ssh 文件夹中的 id_rsa.pub，复制全部内容，登录GitHub，点击右上角人物头像点击settings设置界面，</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117033957541.png" alt="image-20210117033957541.png" style="zoom:40%;">
-
-<p>然后选择SSH这个，再点击New SSH key加上密钥，写上这个密钥的说明，例如：家里的笔记本，台式电脑等，不然密钥多了你会不知道哪个是哪个，复制的内容贴在下面框里就好了，然后点击Add SSH key就好了。</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117034216610.png" alt="image-20210117034216610" style="zoom:50%;">
-
-<p>在Git Bash中检查是否设置密钥成功, 输入<code>ssh git@github.com </code>，如下图就说明成功了。</p>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117034437859.png" alt="image-20210117034437859"></p>
-<h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>hexo基于node，<a href="https://nodejs.org/en/download/">下载安装</a> node安装包，node包含npm，默认安装好后检查是否安装成功，在Git Bash输入（记得关掉重启下Bash，不然不生效）：node -v ，npm -v</p>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117034630578.png" alt="image-20210117034630578"></p>
-<p>到这里安装hexo的环境都搭建好了</p>
-<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>​        在电脑里面创建一个一个文件夹，可以命名为Blog之类的，我们的Hexo项目都放这个文件里面。进入文件夹，右键打开Git Bash，这样我们启动Bash后就直接在Blog文件下了</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/20210117221924.png" alt="20210117221924" style="zoom:50%;">
-
-<p>打开后是这样的：</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117020241448.png" alt="20210117020241448" style="zoom:50%;">
-
-<p>用npm安装hexo, </p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install -g hexo-cli # 注意在Blog文件夹中输入，安装后输入hexo -v报错：Cannot find module &#x27;hexo&#x27; from &#x27;&#x27;的话使用下面这条命令</span><br><span class="line">npm install hexo-util --save # 上面安装没报错的话不用这条命令</span><br></pre></td></tr></table></figure>
-<p>注意：我这里报错提示：系统禁止运行脚本，如果你没有的话跳过这步</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180357726.png" alt="image-20210118180357726" style="zoom:40%;">
-
-<p>然后点击左边的开发者选择，右边下滑找到PowerShell，勾选允许本地运行PowerShell脚本，点击应用，然后把输入界面重新打开一下，让设置生效就行了</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118180450626.png" alt="image-20210118180450626" style="zoom:40%;">
-
-
-
-<p>好了后就可以初始化我们的博客了</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo init # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
-<p>好了以后就可以启动hexo服务了</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo g #生产静态页面，默认是4000端口，如果被占可以指定，如：hexo server -p 5000</span><br><span class="line">hexo s #本地启动hexo服务</span><br></pre></td></tr></table></figure>
-<p>然后在网址上输入localhost:4000（端口号如果改了的话这里也要改）就可以看到了自己的博客了，到这里博客在本地就搭建好了，但是只能现在这台电脑看的到，所以要用GitHub托管，让其他电脑也看的到</p>
-<h2 id="Github-管理博客"><a href="#Github-管理博客" class="headerlink" title="Github 管理博客"></a>Github 管理博客</h2><h3 id="项目上传GitHub"><a href="#项目上传GitHub" class="headerlink" title="项目上传GitHub"></a>项目上传GitHub</h3><p>​        GitHub主线用来放博客项目，用来以后换电脑后可以拉取项目直接写博客，不用重新在本地一点一点搭建，服务托管在分支</p>
-<p>打开Blog文件夹里面的_config.yml文件。翻到最后</p>
-<ol>
-<li>type后面填git</li>
-<li>repo后面填仓库地址（最后没有.git的话要加.git）</li>
-<li>branch后面填分支名字（建议放分支，随便写个不是主线的名字就好，会自动建立分支）</li>
-</ol>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210117021949987.png" alt="image-20210117021949987"></p>
-<p>在Git Bash中下载git</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
-<p>安装好就把准备好的项目上传GitHub主线</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone &#x27;GitHub项目地址&#x27; # 复制GitHub项目到本地，本地会有个与GitHub项目名文件</span><br></pre></td></tr></table></figure>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118181529871.png" alt="image-20210118181529871" style="zoom:80%;">
-
-<p>然后把搭建的博客项目上传到GitHub上去</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git add * # 新增文件放入提交缓存中</span><br><span class="line">git commit  -m  &quot;提交说明&quot; # 就是对这次提交的说明</span><br><span class="line">git push -u origin main # 本地项目提交到GitHub主线上，GitHub上会少几个文件，不过不要紧</span><br></pre></td></tr></table></figure>
-<p>好了之后GitHub上面就有项目了，以后换电脑就拉取项目直接写博客就行了</p>
-<h3 id="GitHub托管博客"><a href="#GitHub托管博客" class="headerlink" title="GitHub托管博客"></a>GitHub托管博客</h3><p>博客部署到GitHub上了</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这是hexo g,hexo d的简写，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d 项目部署到GitHub，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 文件修改后要先生成文件，再部署，也就是要先hexo g，后hexo d</span></span><br><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
-<p>推送完在去GitHub项目中设置Pages功能，先登录GitHub，进去博客项目，点击右边的Settings</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172021785.png" alt="image-20210118172021785" style="zoom:50%;">
-
-<p>下滑找到GitHub Pages，把branch设置成我们在_config.yml上写的分支名字。</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210118172312679.png" alt="image-20210118172312679" style="zoom:50%;">
-
-<p>好了，打开你的 username.github.io 看看吧</p>
-<h4 id="hexo命令："><a href="#hexo命令：" class="headerlink" title="hexo命令："></a>hexo命令：</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo n &quot;博客&quot;			# 新建博客文章，在Blog\source\_posts文件夹中</span><br><span class="line">hexo g 				 # 生成静态页面</span><br><span class="line">hexo s 			 	 # 本地启动hexo服务</span><br><span class="line">hexo d 				 # 推送到GitHub</span><br><span class="line"></span><br><span class="line">hexo server -p 5000  # 指定端口</span><br><span class="line">hexo clean 			 # 清理缓存，若是网页正常情况下可以忽略这条命令</span><br></pre></td></tr></table></figure>
-<h4 id="博客网址标题等修改"><a href="#博客网址标题等修改" class="headerlink" title="博客网址标题等修改"></a><a href="https://hexo.io/zh-cn/docs/configuration">博客网址标题等修改</a></h4><h4 id="博客添加图片"><a href="#博客添加图片" class="headerlink" title="博客添加图片"></a>博客添加图片</h4><h5 id="使用图片插件"><a href="#使用图片插件" class="headerlink" title="使用图片插件"></a>使用图片插件</h5><p>先去项目中_config.yml文件中把post_asset_folder这个选择设为true</p>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210120163629843.png" alt="image-20210120163629843"></p>
-<p>然后在blog文件夹中下载插件：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-asset-image --save</span><br></pre></td></tr></table></figure>
-<p>安装好了以后，在用 hexo n “xxx” 新建博客时，在/source/_posts文件中除了会有 xxx.md的博客文件还会有一个与博客同名文件夹，博客图片保存在同名文件夹内，使用时在xxxx.md中按照markdown的格式引入图片</p>
-<ul>
-<li><strong>编辑器写博客</strong></li>
-</ul>
-<p>在需要图片的地方使用下面这两种方法都行，下面那个就是可以缩小图片，style里面那个就是说图片缩小50%后再显示。</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![<span class="string">描述</span>](<span class="link">xxx/图片名字.png</span>)</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;xxx/图片名字.png&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;图片无法显示时的替代信息&quot;</span> <span class="attr">style</span>=<span class="string">&quot;zoom:50%;&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>用Typora写博客</strong></li>
-</ul>
-<p>Typora有保存图片位置的设置，我们把图片保存地址设置为同位置的同名文件夹就行了</p>
-<p>点击左上角文件，下拉选项选偏好设置</p>
-<img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210120165604892.png" alt="image-20210120165604892" style="zoom: 80%;">
-
-<p>左边点击图像，然后在插入图片地址处点击下拉，选择复制到指定路径</p>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210120165805721.png" alt="image-20210120165805721"></p>
-<p>在下面输入框中输入：./${filename} 你截图粘贴的时候就会把图片直接保存在博客同位置的同名文件夹中了，下面这些图片设置选项前三个最好勾上，其他看需求是否需要。</p>
-<p><img src="/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/image-20210120165928154.png" alt="image-20210120165928154"></p>
-<p>好了，现在博客部署到GitHub上就会显示图片了。</p>
-<h3 id="更换博客主题"><a href="#更换博客主题" class="headerlink" title="更换博客主题"></a>更换博客主题</h3><p>将自己喜欢的主题下载到themes文件夹中，这里就是放主题的，我选的是<a href="https://github.com/theme-next/hexo-theme-next">next主题</a>，你也可以选其他喜欢的主题</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
-<p>修改_config.yml配置，把theme字段配置为新下载的主题：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
-<p>本地查看下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 清理缓存</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成静态页面</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 本地启动hexo服务</span></span><br><span class="line">hexo clean</span><br><span class="line">hexo g </span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><blockquote>
-<p>最后感觉这些文章的帮助：</p>
-<p><a href="https://blog.csdn.net/sinat_37781304/article/details/82729029">hexo史上最全搭建教程</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Ubuntu安装mysql</title>
     <url>/2021/01/18/Ubuntu%E5%AE%89%E8%A3%85mysql/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p><a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https://www.mysql.com/">MySQL</a>是最流行的开源关系数据库管理系统。它速度快，容易使用，容易扩展，并且流行的<code>LAMP</code>和<code>LEMP</code>的一部分。安装电脑为Ubuntu 20.04</p>
-<a id="more"></a>
-
 <h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><h4 id="Ubuntu-版本"><a href="#Ubuntu-版本" class="headerlink" title="Ubuntu 版本"></a>Ubuntu 版本</h4><p>安装东西前看下Ubuntu版本，毕竟有些东西要看看版本能不能兼容</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo lsb_release -a</span><br></pre></td></tr></table></figure>
 <h4 id="安装MySQL-1"><a href="#安装MySQL-1" class="headerlink" title="安装MySQL"></a>安装MySQL</h4><p>开始安装：</p>
@@ -379,7 +367,7 @@
 <p>检查是否安装成功：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql start</span><br></pre></td></tr></table></figure>
 <p>我这里报错了，如下，你没有报错的话可以跳过这里：</p>
-<p><img src="/2021/01/18/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210119175539464.png" alt="image-20210119175539464"></p>
+<p><img src="https://i.loli.net/2021/02/07/LKelHRgqnmI2OAP.png" alt="image-20210119175539464"></p>
 <p>提示我没有一个文件，最后用了<a href="https://www.cnblogs.com/cnwcl/p/13805643.html">汪成龙老师</a>，解决方法：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql stop # 关闭mysql服务</span><br><span class="line">sudo usermod -d /var/lib/mysql/ mysql</span><br><span class="line">sudo service mysql start # 启动mysql服务，大部分报错可以重启mysql服务解决</span><br></pre></td></tr></table></figure>
 <h4 id="MySQL配置"><a href="#MySQL配置" class="headerlink" title="MySQL配置"></a>MySQL配置</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo mysql_secure_installation</span><br></pre></td></tr></table></figure>
@@ -391,9 +379,9 @@
 <h4 id="允许远程连接MySQL"><a href="#允许远程连接MySQL" class="headerlink" title="允许远程连接MySQL"></a>允许远程连接MySQL</h4><p>修改mysql配置文件：/etc/mysql/mysql.conf.d/mysqld.cnf (老版的话在：/etc/mysql/my.cnf)</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br></pre></td></tr></table></figure>
 <p>找到bind-address = 127.0.0.1 将其注释后保存退出，然后重启下MySQL服务，让配置生效就行了</p>
-<p><img src="/2021/01/18/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210120155503110.png" alt="image-20210120155503110"></p>
+<p><img src="https://i.loli.net/2021/02/07/U4xOAKBegaRZ9jb.png" alt="image-20210120155503110"></p>
 <p>然后可以用MySQL客户端（这个不要求我用的是免费的heidiSQL，用别的也一样）用刚刚创建的账号，连接试试看：</p>
-<p><img src="/2021/01/18/Ubuntu%E5%AE%89%E8%A3%85mysql/image-20210120160018545.png" alt="image-20210120160018545"></p>
+<p><img src="https://i.loli.net/2021/02/07/wlT6m1thROFLZbH.png" alt="image-20210120160018545"></p>
 <p>连接上了就好了</p>
 <h4 id="常用命令："><a href="#常用命令：" class="headerlink" title="常用命令："></a>常用命令：</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 创建、查看、删除账号 */</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;password&#x27;</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">USER</span> <span class="keyword">user</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 刷新权限 */</span></span><br><span class="line">flush privileges;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 查看、修改账号是否远程登录,host字段，localhost为本地登录，%为远程登录有ip需要的话，可以把%换成ip */</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> host <span class="operator">=</span> <span class="string">&#x27;%&#x27;</span> <span class="keyword">where</span> <span class="keyword">user</span> <span class="operator">=</span> <span class="string">&#x27;root&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 查看、修改密码强度等级，根据policy字段来改，有些是.policy,有些是_policy，length为密码长度 */</span>;</span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;validate_password%&#x27;</span>;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_policy<span class="operator">=</span>LOW;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_length<span class="operator">=</span><span class="number">6</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 修改账号密码，mysql8.0后修改密码不能使用password字段了 */</span></span><br><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> authentication_string<span class="operator">=</span><span class="string">&#x27;&#x27;</span> <span class="keyword">where</span> <span class="keyword">user</span><span class="operator">=</span><span class="string">&#x27;root&#x27;</span>;      <span class="comment">--将字段置为空</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">with</span> mysql_native_password <span class="keyword">by</span> <span class="string">&#x27;123456&#x27;</span>;</span><br></pre></td></tr></table></figure>
 <h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><p>查看安装的mysql：</p>
@@ -414,223 +402,6 @@
       </categories>
       <tags>
         <tag>mysql</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客next主题个性化设置</title>
-    <url>/2021/01/22/%E5%8D%9A%E5%AE%A2next%E4%B8%BB%E9%A2%98%E4%B8%AA%E6%80%A7%E5%8C%96%E8%AE%BE%E7%BD%AE/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>博客项目中有个_config.yml是用来配置博客网站的，以下简称站点配置，下载的next主题文件中也有个_config.yml用来设置主题的， 以下简称主题配置</p>
-<a id="more"></a>
-
-<h4 id="更换next主题"><a href="#更换next主题" class="headerlink" title="更换next主题"></a>更换next主题</h4><p>将自己喜欢的主题下载到themes文件夹中，这里就是放主题的，我选的是<a href="https://github.com/theme-next/hexo-theme-next">next主题</a>，你也可以选其他喜欢的主题</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
-<p>修改_config.yml配置，把theme字段配置为新下载的主题：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
-<p>本地查看下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 清理缓存</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成静态页面</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 本地启动hexo服务</span></span><br><span class="line">hexo clean</span><br><span class="line">hexo g </span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
-<p>在浏览器输入localhost:4000查看</p>
-<h4 id="主题风格"><a href="#主题风格" class="headerlink" title="主题风格"></a>主题风格</h4><p>在主题配置中找到Schemes，下面有四个主题风格，取消注释就是应用此风格，可以每个都看下，然后选择自己喜欢的</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#Scheme 主题风格</span></span><br><span class="line"><span class="attr">scheme:</span> <span class="string">Muse</span></span><br><span class="line"><span class="comment">#scheme: Mist</span></span><br><span class="line"><span class="comment">#scheme: Pisces</span></span><br><span class="line"><span class="comment">#scheme: Gemini</span></span><br></pre></td></tr></table></figure>
-<h4 id="设置菜单"><a href="#设置菜单" class="headerlink" title="设置菜单"></a>设置菜单</h4><p>1、修改主题配置中，把需要的菜单取消注释</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">home:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-home</span> 					<span class="comment"># 主页</span></span><br><span class="line">  <span class="attr">about:</span> <span class="string">/about/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-user</span> 				<span class="comment"># 关于我</span></span><br><span class="line">  <span class="attr">tags:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-tags</span> 				<span class="comment"># 标签</span></span><br><span class="line">  <span class="attr">categories:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-th</span> 		<span class="comment"># 分类 </span></span><br><span class="line">  <span class="attr">archives:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-archive</span> 	<span class="comment"># 归档</span></span><br><span class="line">  <span class="comment"># schedule: /schedule/ || fa fa-calendar 	# 安排</span></span><br><span class="line">  <span class="comment"># sitemap: /sitemap.xml || fa fa-sitemap 	# 站点地图</span></span><br><span class="line">  <span class="comment"># commonweal: /404/ || fa fa-heartbeat 	# 404公益</span></span><br></pre></td></tr></table></figure>
-<p>2、添加标签、分类、关于我页面</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo new page &quot;tags&quot;</span><br><span class="line">hexo new page &quot;categories&quot;</span><br><span class="line">hexo new page &quot;about&quot;</span><br></pre></td></tr></table></figure>
-<p>3、在source文件夹中找到新增加的页面：</p>
-<ul>
-<li>编辑<code>tags/index.md</code></li>
-</ul>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">标签</span></span><br><span class="line"><span class="attr">date:</span> <span class="string">你的时间,会自动创建.</span></span><br><span class="line"><span class="attr">type:</span> <span class="string">&quot;tags&quot;</span></span><br><span class="line"><span class="attr">comments:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>编辑<code>categorcies/index.md</code></li>
-</ul>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">分类</span></span><br><span class="line"> <span class="attr">date:</span> <span class="string">你的时间,会自动创建.</span></span><br><span class="line"> <span class="attr">type:</span> <span class="string">&quot;categories&quot;</span></span><br><span class="line"> <span class="attr">comments:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>编辑<code>about/index.md</code>，可以自由编辑关于自己信息</p>
-</li>
-<li><p>文章模板更改</p>
-</li>
-</ul>
-<p>修改<code>scaffolds/post.md</code>，我们增加了标签、分类等菜单，加入到模板中，新建文章时会自动加入，可自己需要加：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> &#123;&#123; <span class="string">title</span> &#125;&#125;<span class="string">//题目</span></span><br><span class="line"><span class="attr">date:</span> &#123;&#123; <span class="string">date</span> &#125;&#125;<span class="string">//日期</span></span><br><span class="line"><span class="attr">tags:</span>			<span class="string">//标签</span>	</span><br><span class="line"><span class="attr">categories:</span>		<span class="string">//分类</span></span><br><span class="line"><span class="attr">copyright:</span> <span class="literal">true</span> <span class="string">//版权信息说明</span></span><br><span class="line"><span class="attr">photos:</span>         <span class="string">//主页文章显示图片</span></span><br></pre></td></tr></table></figure>
-<h4 id="添加自定义界面"><a href="#添加自定义界面" class="headerlink" title="添加自定义界面"></a>添加自定义界面</h4><p>1、添加自定义界面</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo new page &quot;customPage&quot;</span><br></pre></td></tr></table></figure>
-<p>2、主题配置中增加自定义界面配置</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">home:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-home</span>                         <span class="comment"># 主页</span></span><br><span class="line">  <span class="attr">about:</span> <span class="string">/about/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-user</span>                  <span class="comment"># 关于我</span></span><br><span class="line">  <span class="attr">tags:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-tags</span>                    <span class="comment"># 标签</span></span><br><span class="line">  <span class="attr">categories:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-th</span>          <span class="comment"># 分类 </span></span><br><span class="line">  <span class="attr">archives:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-archive</span>         <span class="comment"># 归档</span></span><br><span class="line">  <span class="attr">customPage:</span> <span class="string">/customPage/</span> <span class="string">||</span> <span class="string">fa</span> <span class="string">fa-customPage</span>  <span class="comment"># 新增自定义界面</span></span><br></pre></td></tr></table></figure>
-<p>3、在source文件夹中找到customPage，根据需求自定义编辑</p>
-<h4 id="添加搜索功能"><a href="#添加搜索功能" class="headerlink" title="添加搜索功能"></a>添加搜索功能</h4><p>1、安装  <a href="https://link.jianshu.com/?t=https://github.com/flashlab/hexo-generator-search">hexo-generator-searchdb </a> 插件</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-generator-searchdb --save</span><br></pre></td></tr></table></figure>
-<p>2、主题配置找到local_search ，enab后面改为true</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">local_search:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-<h4 id="隐藏底部的强力驱动"><a href="#隐藏底部的强力驱动" class="headerlink" title="隐藏底部的强力驱动"></a>隐藏底部的强力驱动</h4><p>修改主题配置的powered</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">powered:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-<h4 id="侧边栏设置"><a href="#侧边栏设置" class="headerlink" title="侧边栏设置"></a>侧边栏设置</h4><p>主题配置文件中找到sidebar字段</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">sidebar:</span></span><br><span class="line"><span class="comment"># Sidebar Position - 侧栏位置（只对Pisces | Gemini两种风格有效）</span></span><br><span class="line">  <span class="attr">position:</span> <span class="string">left</span>        <span class="string">//靠左放置</span></span><br><span class="line">  <span class="comment">#position: right      //靠右放置</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Sidebar Display - 侧栏显示时机（只对Muse | Mist两种风格有效）</span></span><br><span class="line">  <span class="comment">#display: post        //默认行为，在文章页面（拥有目录列表）时显示</span></span><br><span class="line">  <span class="attr">display:</span> <span class="string">always</span>       <span class="string">//在所有页面中都显示</span></span><br><span class="line">  <span class="comment">#display: hide        //在所有页面中都隐藏（可以手动展开）</span></span><br><span class="line">  <span class="comment">#display: remove      //完全移除</span></span><br></pre></td></tr></table></figure>
-<h4 id="回到顶部按钮"><a href="#回到顶部按钮" class="headerlink" title="回到顶部按钮"></a>回到顶部按钮</h4><p>修改主题配置<strong>back2top</strong>选项</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">back2top:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 将返回按钮设置在侧边栏</span></span><br><span class="line">  <span class="attr">sidebar:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 按钮上显示进度百分比</span></span><br><span class="line">  <span class="attr">scrollpercent:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-<h4 id="头像设置"><a href="#头像设置" class="headerlink" title="头像设置"></a>头像设置</h4><p>1、头像图片放入主题文件中**<code>themes/主题/source/images</code>**中</p>
-<p>2、修改主题配置，找到**<code>Sidebar Avatar</code>**字段，图片路径放在url后面就行了</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 侧边栏头像</span></span><br><span class="line"><span class="attr">avatar:</span></span><br><span class="line">  <span class="attr">url:</span> <span class="string">/images/avatar.gif</span></span><br><span class="line">  <span class="comment"># 圆形头像显示</span></span><br><span class="line">  <span class="attr">rounded:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 鼠标放置在头像上时，头像旋转</span></span><br><span class="line">  <span class="attr">rotated:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-<p>3、增加点击头像时跳转主页功能</p>
-<p>有些博主是在 <code>/themes/next/layout/_macro/sidebar.swig</code> 修改 <code>site-author-image</code>字段</p>
-<p>但是我的<code>site-author-image</code>在<code>/themes/next/layout/_partials/sidebar/site-overview.swig</code>里面找到的</p>
-<p>找到<code>site-author-image</code>代码：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;site-author-image&quot;</span> <span class="attr">itemprop</span>=<span class="string">&quot;image&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">src</span>=<span class="string">&quot;&#123;&#123; url_for( theme.avatar | default(theme.images + &#x27;/avatar.gif&#x27;) ) &#125;&#125;&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">alt</span>=<span class="string">&quot;&#123;&#123; theme.author &#125;&#125;&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-<p>然后用<code>&lt;a href=&quot;/&quot;&gt;&lt;/a&gt;</code>包裹，如下</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;/&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">&quot;site-author-image&quot;</span> <span class="attr">itemprop</span>=<span class="string">&quot;image&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">src</span>=<span class="string">&quot;&#123;&#123; url_for( theme.avatar | default(theme.images + &#x27;/avatar.gif&#x27;) ) &#125;&#125;&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">alt</span>=<span class="string">&quot;&#123;&#123; theme.author &#125;&#125;&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h4 id="代码高亮"><a href="#代码高亮" class="headerlink" title="代码高亮"></a>代码高亮</h4><p>1、站点配置中找到 <code>highlight</code>下面的<code>auto_detect</code>设为<code>ture</code></p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">highlight:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">line_number:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">auto_detect:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">tab_replace:</span> <span class="string">&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
-<p>2、主题配置<code>highlight_theme</code>改为你喜欢的</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">highlight_theme:</span> <span class="string">normal</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>normal</li>
-<li>night</li>
-<li>night eighties</li>
-<li>night blue</li>
-<li>night bright</li>
-</ul>
-<h4 id="添加阅读全文"><a href="#添加阅读全文" class="headerlink" title="添加阅读全文"></a>添加阅读全文</h4><p>首页文章不再全部展示，添加阅读文章选项，选择阅读。</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">在你的文章中添加&lt;!--more--&gt;,你想再哪儿截止就在哪儿添加</span><br></pre></td></tr></table></figure>
-<h4 id="超链接颜色"><a href="#超链接颜色" class="headerlink" title="超链接颜色"></a>超链接颜色</h4><p>修改超链接样式在<code>themes\主题\source\css\_common\components\post\post.styl</code>里,在这里添加条目</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 链接为蓝色，鼠标放上去为橙色 --&gt;</span></span><br><span class="line">.post-body p a &#123;</span><br><span class="line">  color: #0593d3;</span><br><span class="line">  border-bottom: none;</span><br><span class="line">  border-bottom: 1px solid #0593d3;</span><br><span class="line">  &amp;:hover &#123;</span><br><span class="line">    color: #fc6423;</span><br><span class="line">    border-bottom: none;</span><br><span class="line">    border-bottom: 1px solid #fc6423;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="头像设置-1"><a href="#头像设置-1" class="headerlink" title="头像设置"></a>头像设置</h4><p>1、把头像图片放在<code>themes/主题/source/images</code>中</p>
-<p>2、在<strong>主题配置</strong>找到<code>Sidebar Avatar</code></p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 头像路径</span></span><br><span class="line"><span class="attr">url:</span> <span class="string">/images/avatar.gif</span></span><br><span class="line"><span class="comment"># 头像是否显示为圆形</span></span><br><span class="line"><span class="attr">rounded:</span> <span class="literal">true</span></span><br><span class="line"><span class="comment"># 头像点击是否旋转</span></span><br><span class="line"><span class="attr">rotated:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-<p>3、增加点击头像跳转到主页</p>
-<h4 id="图片放大查看"><a href="#图片放大查看" class="headerlink" title="图片放大查看"></a>图片放大查看</h4><p>打开<strong>主题配置</strong><code>_config.yml</code>，搜索<code>fancybox</code>字段，设置其值为<code>true</code>进入到<code>theme/主题/</code>文件夹下，打开<code>git bash</code>：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/theme-next/theme-next-fancybox3 source/lib/fancybox</span><br></pre></td></tr></table></figure>
-<p>设置后我出现博客无法查看，原因未知</p>
-<h4 id="给界面添加背景图片"><a href="#给界面添加背景图片" class="headerlink" title="给界面添加背景图片"></a>给界面添加背景图片</h4><p>在根目录下的<code>source</code>里面建立**<code>_data</code><strong>文件夹，文件夹中建立</strong><code>styles.style</code>**文件，文件添加：</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 博客添加背景图片 */</span></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  <span class="attribute">background</span>: <span class="built_in">url</span>(填写背景图链接或路径) no-repeat;</span><br><span class="line">  <span class="comment">/* 背景图垂直、水平均居中 */</span></span><br><span class="line">  <span class="attribute">background-position</span>: center center;</span><br><span class="line">  <span class="comment">/* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */</span></span><br><span class="line">  <span class="attribute">background-attachment</span>: fixed;</span><br><span class="line">  <span class="comment">/* 让背景图基于容器大小伸缩 */</span></span><br><span class="line">  <span class="attribute">background-size</span>: cover;</span><br><span class="line">  <span class="comment">/* 设置背景颜色，背景图加载过程中会显示背景色 */</span></span><br><span class="line">  <span class="attribute">background-color</span>: <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 页面透明度修改 */</span></span><br><span class="line"><span class="comment">/* .header-inner下为侧边栏透明度 */</span></span><br><span class="line"><span class="comment">/* .main-inner下为主页面透明度 */</span></span><br><span class="line"><span class="selector-class">.header-inner</span>&#123;</span><br><span class="line">	<span class="attribute">opacity</span>: <span class="number">0.8</span>;  </span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.main-inner</span> &#123; </span><br><span class="line">   // margin-top: 60px;</span><br><span class="line">   // <span class="selector-tag">padding</span>: 60<span class="selector-tag">px</span> 60<span class="selector-tag">px</span> 60<span class="selector-tag">px</span> 60<span class="selector-tag">px</span>;</span><br><span class="line"></span><br><span class="line">    <span class="selector-tag">opacity</span>: 0.8;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 主页文章添加阴影 */</span></span><br><span class="line"><span class="selector-class">.post</span> &#123;</span><br><span class="line">   margin-top: 20px;  	// 大小自行调整 </span><br><span class="line">   <span class="selector-tag">margin-bottom</span>: 20<span class="selector-tag">px</span>; // 大小自行调整</span><br><span class="line">   <span class="selector-tag">padding</span>: 10<span class="selector-tag">px</span>;      	// 大小自行调整</span><br><span class="line">   <span class="selector-tag">-webkit-box-shadow</span>: 0 0 5<span class="selector-tag">px</span> <span class="selector-tag">rgba</span>(202, 203, 203, .5);</span><br><span class="line">   <span class="selector-tag">-moz-box-shadow</span>: 0 0 5<span class="selector-tag">px</span> <span class="selector-tag">rgba</span>(202, 203, 204, .5);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>设置后出现侧边栏无法点击的情况</p>
-<h4 id="添加点击爆炸效果"><a href="#添加点击爆炸效果" class="headerlink" title="添加点击爆炸效果"></a>添加点击爆炸效果</h4><p>1、打开<code>/themes/主题/layout/_layout.swig</code>文件，在最后<code>&lt;/body&gt;</code>前面添加：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"> <span class="comment">&lt;!-- 页面点击礼花效果 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;/js/firework.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>2、在<code>themes\主题\source\js</code>中新建<code>firework.js</code>文件，里面粘贴这里的代码 <a href="https://script-1256884783.file.myqcloud.com/cursor/fireworks.js">点击这里</a></p>
-<h4 id="博客添加音乐"><a href="#博客添加音乐" class="headerlink" title="博客添加音乐"></a>博客添加音乐</h4><h5 id="添加音乐栏"><a href="#添加音乐栏" class="headerlink" title="添加音乐栏"></a>添加音乐栏</h5><p>使用Aplayer + MetingJS插件</p>
-<p>特点：</p>
-<ul>
-<li>可以播放大部分音乐</li>
-<li>还可以添加其他音乐平台的歌单，如：QQ音乐…</li>
-</ul>
-<p>这里我们举例音乐标签添加到侧边栏</p>
-<p>打开我们主题文件：<code>themes\next\layout\_macro\sidebar.swig</code>找到<code>sidebar-inner</code>，复制下面代码粘贴到此<code>&lt;div&gt;</code>标签后即可。</p>
-<blockquote>
-<p>【要求<code>MetingJS</code>版本：@1.2】</p>
-</blockquote>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aside</span> <span class="attr">class</span>=<span class="string">&quot;sidebar&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;sidebar-inner&quot;</span>&gt;</span>   </span><br><span class="line"><span class="comment">&lt;!-- 找到上面两个标签，在下面添加下面代码 --&gt;</span></span><br><span class="line">        </span><br><span class="line"><span class="comment">&lt;!-- require APlayer --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- require MetingJS--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span> </span><br><span class="line">	<span class="comment">&lt;!--网易云--&gt;</span>   </span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;aplayer&quot;</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">data-id</span>=<span class="string">&quot;4916164702&quot;</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">data-server</span>=<span class="string">&quot;netease&quot;</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">data-type</span>=<span class="string">&quot;playlist&quot;</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">data-fixed</span>=<span class="string">&quot;false&quot;</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">data-autoplay</span>=<span class="string">&quot;false&quot;</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">data-list-folded</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">data-mutex</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">data-order</span>=<span class="string">&quot;random&quot;</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">data-loop</span>=<span class="string">&quot;all&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">data-volume</span>=<span class="string">&quot;0.4&quot;</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">data-theme</span>=<span class="string">&quot;#FADFA3&quot;</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">date-preload</span>=<span class="string">&quot;auto&quot;</span> &gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>属性</strong></p>
-<table>
-<thead>
-<tr>
-<th>选项</th>
-<th>默认值</th>
-<th>功能描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>id</td>
-<td><strong>必须值</strong></td>
-<td>歌曲 id / 播放列表 id / 相册 id / 搜索关键字</td>
-</tr>
-<tr>
-<td>server</td>
-<td><strong>必须值</strong></td>
-<td>音乐平台: <code>netease</code>, <code>tencent</code>, <code>kugou</code>, <code>xiami</code>, <code>baidu</code></td>
-</tr>
-<tr>
-<td>type</td>
-<td><strong>必须值</strong></td>
-<td><code>song</code>, <code>playlist</code>, <code>album</code>, <code>search</code>, `artist</td>
-</tr>
-<tr>
-<td>auto</td>
-<td>options</td>
-<td>music link, support: <code>netease</code>, <code>tencent</code>, <code>xiami</code></td>
-</tr>
-<tr>
-<td>fixed</td>
-<td><code>false</code></td>
-<td>开启固定模式</td>
-</tr>
-<tr>
-<td>mini</td>
-<td><code>false</code></td>
-<td>开启迷你模式</td>
-</tr>
-<tr>
-<td>autoplay</td>
-<td><code>false</code></td>
-<td>自动播放，移动端浏览器暂时不支持此功能</td>
-</tr>
-<tr>
-<td>theme</td>
-<td><code>#2980b9</code></td>
-<td>播放器风格色彩设置</td>
-</tr>
-<tr>
-<td>loop</td>
-<td><code>all</code></td>
-<td>列表循环模式：<code>all</code>, <code>one</code>,<code>none</code></td>
-</tr>
-<tr>
-<td>order</td>
-<td><code>list</code></td>
-<td>列表播放模式： <code>list</code>, <code>random</code></td>
-</tr>
-<tr>
-<td>preload</td>
-<td><code>auto</code></td>
-<td>音乐文件预载入模式，可选项： <code>none</code>, <code>metadata</code>, <code>auto</code></td>
-</tr>
-<tr>
-<td>volume</td>
-<td><code>0.7</code></td>
-<td>播放器音量</td>
-</tr>
-<tr>
-<td>mutex</td>
-<td><code>true</code></td>
-<td>该选项开启时，如果同页面有其他 aplayer 播放，该播放器会暂停</td>
-</tr>
-<tr>
-<td>lrc-type</td>
-<td><code>0</code></td>
-<td>lyric type</td>
-</tr>
-<tr>
-<td>list-folded</td>
-<td><code>false</code></td>
-<td>歌词格式类型</td>
-</tr>
-<tr>
-<td>list-max-height</td>
-<td><code>340px</code></td>
-<td>播放列表的最大长度</td>
-</tr>
-<tr>
-<td>storage-name</td>
-<td><code>metingjs</code></td>
-<td>LocalStorage 中存储播放器设定的键名</td>
-</tr>
-</tbody></table>
-<h5 id="使用-Pajx-实现背景音乐全局播放"><a href="#使用-Pajx-实现背景音乐全局播放" class="headerlink" title="使用 Pajx 实现背景音乐全局播放"></a>使用 <code>Pajx</code> 实现背景音乐全局播放</h5><p>打开<code>themes\next\layout</code>文件夹找到<code>_layout.swig</code>，在<code>&lt;\head&gt;</code>标签前添加下面代码，并保存。</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span> </span><br><span class="line"><span class="comment">&lt;!-- 代码放在head标签里面 --&gt;</span></span><br><span class="line">    </span><br><span class="line">  <span class="comment">&lt;!--pjax：防止跳转页面音乐暂停--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span> </span><br></pre></td></tr></table></figure>
-<p>在主题配置中找到<code>pjax</code>，设置为<code>true</code></p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Easily enable fast Ajax navigation on your website.</span></span><br><span class="line"><span class="comment"># Dependencies: https://github.com/theme-next/theme-next-pjax</span></span><br><span class="line"><span class="attr">pjax:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-<p>在博客文件夹打开<code>GitBash</code>执行<code>hexo clean</code>、<code>hexo g</code>、<code>hexo s</code>，<a href="http://localhost:4000/">跳转页面</a>时即可看到效果。</p>
-<h4 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h4><blockquote>
-<p>最后感觉这些文章的帮助：</p>
-<p><a href="http://lyxf.live/posts/2063/">hexo-Next主题美化&lt;一&gt;</a></p>
-<p><a href="https://www.cnblogs.com/liziczh/p/9318656.html">Hexo | （二）Next主题个性化设置</a></p>
-<p><a href="https://blog.csdn.net/tuckEnough/article/details/107383201">hexo theme next7.8 主题美化</a></p>
-<p><a href="https://blog.csdn.net/chrishly3/article/details/103992492">hexo个人博客 next主题添加背景图片(无custom.styl情况)</a></p>
-<p><a href="https://blog.csdn.net/qq_39720594/article/details/105401774">Hexo + Next 主题实现全局播放背景音乐</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>next</tag>
       </tags>
   </entry>
 </search>
