@@ -29,23 +29,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Go操作Redis</title>
-    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
-<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
-<blockquote>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Go</category>
-      </categories>
-      <tags>
-        <tag>redis</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Go文件操作</title>
     <url>/2021/01/27/Go%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go文件操作</p>
@@ -159,6 +142,23 @@
       </tags>
   </entry>
   <entry>
+    <title>Go操作Redis</title>
+    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
+<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
+<blockquote>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Go</category>
+      </categories>
+      <tags>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Go环境搭建</title>
     <url>/2021/01/25/Go%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录自己的Go的环境搭建</p>
@@ -237,54 +237,6 @@
       </categories>
       <tags>
         <tag>Go</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Ubuntu安装mysql</title>
-    <url>/2021/01/18/Ubuntu%E5%AE%89%E8%A3%85mysql/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p><a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https://www.mysql.com/">MySQL</a>是最流行的开源关系数据库管理系统。它速度快，容易使用，容易扩展，并且流行的<code>LAMP</code>和<code>LEMP</code>的一部分。安装电脑为Ubuntu 20.04</p>
-<h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><h4 id="Ubuntu-版本"><a href="#Ubuntu-版本" class="headerlink" title="Ubuntu 版本"></a>Ubuntu 版本</h4><p>安装东西前看下Ubuntu版本，毕竟有些东西要看看版本能不能兼容</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo lsb_release -a</span><br></pre></td></tr></table></figure>
-<h4 id="安装MySQL-1"><a href="#安装MySQL-1" class="headerlink" title="安装MySQL"></a>安装MySQL</h4><p>开始安装：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt update # 更新源</span><br><span class="line">sudo apt install mysql-server # 安装mysql-server</span><br></pre></td></tr></table></figure>
-<p>检查是否安装成功：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql start</span><br></pre></td></tr></table></figure>
-<p>我这里报错了，如下，你没有报错的话可以跳过这里：</p>
-<p><img src="https://i.loli.net/2021/02/07/LKelHRgqnmI2OAP.png" alt="image-20210119175539464"></p>
-<p>提示我没有一个文件，最后用了<a href="https://www.cnblogs.com/cnwcl/p/13805643.html">汪成龙老师</a>，解决方法：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql stop # 关闭mysql服务</span><br><span class="line">sudo usermod -d /var/lib/mysql/ mysql</span><br><span class="line">sudo service mysql start # 启动mysql服务，大部分报错可以重启mysql服务解决</span><br></pre></td></tr></table></figure>
-<h4 id="MySQL配置"><a href="#MySQL配置" class="headerlink" title="MySQL配置"></a>MySQL配置</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo mysql_secure_installation</span><br></pre></td></tr></table></figure>
-<p>按提示设置root密码，密码等级……</p>
-<p>好了后以root用户登录mysql</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo mysql</span><br></pre></td></tr></table></figure>
-<p>创建新用户：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 创建新用户：my_user */</span></span><br><span class="line"><span class="comment">/* host：%表示任意连接，localhost表示只允许本地连接 */</span></span><br><span class="line"><span class="comment">/* 密码：my_passwrod */</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;my_user&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;my_password&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 查询用户 */</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 删除用户，默认删除的是&#x27;xxx&#x27;@&#x27;%&#x27;用户，如果要删除&#x27;xxx&#x27;@&#x27;localhost&#x27;，使用drop user &#x27;xxx&#x27;@&#x27;localhost&#x27; */</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> my_user;</span><br></pre></td></tr></table></figure>
-<h4 id="允许远程连接MySQL"><a href="#允许远程连接MySQL" class="headerlink" title="允许远程连接MySQL"></a>允许远程连接MySQL</h4><p>修改mysql配置文件：/etc/mysql/mysql.conf.d/mysqld.cnf (老版的话在：/etc/mysql/my.cnf)</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br></pre></td></tr></table></figure>
-<p>找到bind-address = 127.0.0.1 将其注释后保存退出，然后重启下MySQL服务，让配置生效就行了</p>
-<p><img src="https://i.loli.net/2021/02/07/U4xOAKBegaRZ9jb.png" alt="image-20210120155503110"></p>
-<p>然后可以用MySQL客户端（这个不要求我用的是免费的heidiSQL，用别的也一样）用刚刚创建的账号，连接试试看：</p>
-<p><img src="https://i.loli.net/2021/02/07/wlT6m1thROFLZbH.png" alt="image-20210120160018545"></p>
-<p>连接上了就好了</p>
-<h4 id="常用命令："><a href="#常用命令：" class="headerlink" title="常用命令："></a>常用命令：</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 创建、查看、删除账号 */</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;password&#x27;</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">USER</span> <span class="keyword">user</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 刷新权限 */</span></span><br><span class="line">flush privileges;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 查看、修改账号是否远程登录,host字段，localhost为本地登录，%为远程登录有ip需要的话，可以把%换成ip */</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> host <span class="operator">=</span> <span class="string">&#x27;%&#x27;</span> <span class="keyword">where</span> <span class="keyword">user</span> <span class="operator">=</span> <span class="string">&#x27;root&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 查看、修改密码强度等级，根据policy字段来改，有些是.policy,有些是_policy，length为密码长度 */</span>;</span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;validate_password%&#x27;</span>;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_policy<span class="operator">=</span>LOW;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_length<span class="operator">=</span><span class="number">6</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 修改账号密码，mysql8.0后修改密码不能使用password字段了 */</span></span><br><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> authentication_string<span class="operator">=</span><span class="string">&#x27;&#x27;</span> <span class="keyword">where</span> <span class="keyword">user</span><span class="operator">=</span><span class="string">&#x27;root&#x27;</span>;      <span class="comment">--将字段置为空</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">with</span> mysql_native_password <span class="keyword">by</span> <span class="string">&#x27;123456&#x27;</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><p>查看安装的mysql：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dpkg --list|grep mysql</span><br></pre></td></tr></table></figure>
-<p>删除mysql：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt-get remove mysql-*</span><br></pre></td></tr></table></figure>
-<p>清理残留数据：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dpkg -l |grep ^rc|awk &#x27;&#123;print $2&#125;&#x27; |sudo xargs dpkg -P</span><br></pre></td></tr></table></figure>
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章的帮助：</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/weixin_38924500/article/details/106261971">Ubuntu20.04安装Mysql</a></p>
-<p><a href="https://www.jianshu.com/p/7b6b8a5689f0">ubuntu彻底卸载mysql并且重新安装</a></p>
-<p><a href="https://blog.csdn.net/qq_26164609/article/details/106881079">Ubunto20.04安装MySQL并修改root用户密码</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>服务器</category>
-      </categories>
-      <tags>
-        <tag>mysql</tag>
       </tags>
   </entry>
   <entry>
@@ -392,6 +344,7 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 清理缓存</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成静态页面</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 本地启动hexo服务</span></span><br><span class="line">hexo clean</span><br><span class="line">hexo g </span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
 <p>我看到<a href="https://github.com/jerryc127/hexo-theme-butterfly">butterfly主题</a>的时候又感觉这个好看，换了这个，主题设置可以参考 <a href="https://xiabor.com/">MuJin’s Blog</a> 大佬的博客</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载主题</span></span><br><span class="line">git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/Butterfly</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装主题依赖</span></span><br><span class="line">npm install hexo-renderer-pug hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure>
+<p>图床的话可以选择 <a href="https://sm.ms/">sm.ms</a>、<a href="https://imgchr.com/">路过床床</a>，还可以自己用<a href="https://blog.keepdai.cn/jsdelivr.html">github建立一个图床</a>都行，看自己选择吧</p>
 <h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><blockquote>
 <p>最后感觉这些文章的帮助：</p>
 <p><a href="https://blog.csdn.net/sinat_37781304/article/details/82729029">hexo史上最全搭建教程</a></p>
@@ -402,6 +355,54 @@
       </categories>
       <tags>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Ubuntu安装mysql</title>
+    <url>/2021/01/18/Ubuntu%E5%AE%89%E8%A3%85mysql/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p><a href="https://yq.aliyun.com/go/articleRenderRedirect?url=https://www.mysql.com/">MySQL</a>是最流行的开源关系数据库管理系统。它速度快，容易使用，容易扩展，并且流行的<code>LAMP</code>和<code>LEMP</code>的一部分。安装电脑为Ubuntu 20.04</p>
+<h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><h4 id="Ubuntu-版本"><a href="#Ubuntu-版本" class="headerlink" title="Ubuntu 版本"></a>Ubuntu 版本</h4><p>安装东西前看下Ubuntu版本，毕竟有些东西要看看版本能不能兼容</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo lsb_release -a</span><br></pre></td></tr></table></figure>
+<h4 id="安装MySQL-1"><a href="#安装MySQL-1" class="headerlink" title="安装MySQL"></a>安装MySQL</h4><p>开始安装：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt update # 更新源</span><br><span class="line">sudo apt install mysql-server # 安装mysql-server</span><br></pre></td></tr></table></figure>
+<p>检查是否安装成功：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql start</span><br></pre></td></tr></table></figure>
+<p>我这里报错了，如下，你没有报错的话可以跳过这里：</p>
+<p><img src="https://i.loli.net/2021/02/07/LKelHRgqnmI2OAP.png" alt="image-20210119175539464"></p>
+<p>提示我没有一个文件，最后用了<a href="https://www.cnblogs.com/cnwcl/p/13805643.html">汪成龙老师</a>，解决方法：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo service mysql stop # 关闭mysql服务</span><br><span class="line">sudo usermod -d /var/lib/mysql/ mysql</span><br><span class="line">sudo service mysql start # 启动mysql服务，大部分报错可以重启mysql服务解决</span><br></pre></td></tr></table></figure>
+<h4 id="MySQL配置"><a href="#MySQL配置" class="headerlink" title="MySQL配置"></a>MySQL配置</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<p>按提示设置root密码，密码等级……</p>
+<p>好了后以root用户登录mysql</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo mysql</span><br></pre></td></tr></table></figure>
+<p>创建新用户：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 创建新用户：my_user */</span></span><br><span class="line"><span class="comment">/* host：%表示任意连接，localhost表示只允许本地连接 */</span></span><br><span class="line"><span class="comment">/* 密码：my_passwrod */</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;my_user&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;my_password&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 查询用户 */</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 删除用户，默认删除的是&#x27;xxx&#x27;@&#x27;%&#x27;用户，如果要删除&#x27;xxx&#x27;@&#x27;localhost&#x27;，使用drop user &#x27;xxx&#x27;@&#x27;localhost&#x27; */</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> my_user;</span><br></pre></td></tr></table></figure>
+<h4 id="允许远程连接MySQL"><a href="#允许远程连接MySQL" class="headerlink" title="允许远程连接MySQL"></a>允许远程连接MySQL</h4><p>修改mysql配置文件：/etc/mysql/mysql.conf.d/mysqld.cnf (老版的话在：/etc/mysql/my.cnf)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br></pre></td></tr></table></figure>
+<p>找到bind-address = 127.0.0.1 将其注释后保存退出，然后重启下MySQL服务，让配置生效就行了</p>
+<p><img src="https://i.loli.net/2021/02/07/U4xOAKBegaRZ9jb.png" alt="image-20210120155503110"></p>
+<p>然后可以用MySQL客户端（这个不要求我用的是免费的heidiSQL，用别的也一样）用刚刚创建的账号，连接试试看：</p>
+<p><img src="https://i.loli.net/2021/02/07/wlT6m1thROFLZbH.png" alt="image-20210120160018545"></p>
+<p>连接上了就好了</p>
+<h4 id="常用命令："><a href="#常用命令：" class="headerlink" title="常用命令："></a>常用命令：</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 创建、查看、删除账号 */</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;password&#x27;</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">USER</span> <span class="keyword">user</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 刷新权限 */</span></span><br><span class="line">flush privileges;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 查看、修改账号是否远程登录,host字段，localhost为本地登录，%为远程登录有ip需要的话，可以把%换成ip */</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">user</span>,host <span class="keyword">FROM</span> mysql.user;</span><br><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> host <span class="operator">=</span> <span class="string">&#x27;%&#x27;</span> <span class="keyword">where</span> <span class="keyword">user</span> <span class="operator">=</span> <span class="string">&#x27;root&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 查看、修改密码强度等级，根据policy字段来改，有些是.policy,有些是_policy，length为密码长度 */</span>;</span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;validate_password%&#x27;</span>;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_policy<span class="operator">=</span>LOW;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> validate_password_length<span class="operator">=</span><span class="number">6</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 修改账号密码，mysql8.0后修改密码不能使用password字段了 */</span></span><br><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> authentication_string<span class="operator">=</span><span class="string">&#x27;&#x27;</span> <span class="keyword">where</span> <span class="keyword">user</span><span class="operator">=</span><span class="string">&#x27;root&#x27;</span>;      <span class="comment">--将字段置为空</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">with</span> mysql_native_password <span class="keyword">by</span> <span class="string">&#x27;123456&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><p>查看安装的mysql：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dpkg --list|grep mysql</span><br></pre></td></tr></table></figure>
+<p>删除mysql：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo apt-get remove mysql-*</span><br></pre></td></tr></table></figure>
+<p>清理残留数据：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">dpkg -l |grep ^rc|awk &#x27;&#123;print $2&#125;&#x27; |sudo xargs dpkg -P</span><br></pre></td></tr></table></figure>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章的帮助：</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/weixin_38924500/article/details/106261971">Ubuntu20.04安装Mysql</a></p>
+<p><a href="https://www.jianshu.com/p/7b6b8a5689f0">ubuntu彻底卸载mysql并且重新安装</a></p>
+<p><a href="https://blog.csdn.net/qq_26164609/article/details/106881079">Ubunto20.04安装MySQL并修改root用户密码</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>服务器</category>
+      </categories>
+      <tags>
+        <tag>mysql</tag>
       </tags>
   </entry>
 </search>
