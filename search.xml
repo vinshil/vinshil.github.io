@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Go操作Redis</title>
-    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
-<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
-<blockquote>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Go</category>
-      </categories>
-      <tags>
-        <tag>redis</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Go操作Mysql</title>
     <url>/2021/02/02/Go%E6%93%8D%E4%BD%9CMySQL/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>MySQL是业界常用的关系型数据库，记录Go如何操作MySQL数据库</p>
@@ -46,45 +29,20 @@
       </tags>
   </entry>
   <entry>
-    <title>Go日志</title>
-    <url>/2021/02/02/Go%E6%97%A5%E5%BF%97/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go日志操作</p>
-<h2 id="标准log库"><a href="#标准log库" class="headerlink" title="标准log库"></a>标准log库</h2><h3 id="log输出"><a href="#log输出" class="headerlink" title="log输出"></a>log输出</h3><p>Go有 <code>fmt.Print</code> 输出，但是使用 <code>log.Print</code> 得话输出自带时间，可以更好帮我们找到出现问题得时间：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">11</span>:<span class="number">54</span>:<span class="number">25</span> hello world</span><br></pre></td></tr></table></figure>
-<h3 id="定制log输出"><a href="#定制log输出" class="headerlink" title="定制log输出"></a>定制log输出</h3><p>有了时间，但是我们还想要更多得信息，发生得源代码行号等等，对此 <code>log</code> 提供了可定制化配置，可以定制日志的抬头信息</p>
-<p>可以定义的选项：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Ldate         = <span class="number">1</span> &lt;&lt; <span class="literal">iota</span>     <span class="comment">//日期示例： 2009/01/23</span></span><br><span class="line">    Ltime                         <span class="comment">//时间示例: 01:23:23</span></span><br><span class="line">    Lmicroseconds                 <span class="comment">//毫秒示例: 01:23:23.123123.</span></span><br><span class="line">    Llongfile                     <span class="comment">//绝对路径和行号: /a/b/c/d.go:23</span></span><br><span class="line">    Lshortfile                    <span class="comment">//文件和行号: d.go:23.</span></span><br><span class="line">    LUTC                          <span class="comment">//日期时间转为0时区的</span></span><br><span class="line">    LstdFlags     = Ldate | Ltime <span class="comment">//Go提供的标准抬头信息</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>现在定制：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
-<h3 id="日志前缀"><a href="#日志前缀" class="headerlink" title="日志前缀"></a>日志前缀</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Prefix 查看前缀</span></span><br><span class="line"><span class="comment">// SetPrefix 设置前缀</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Prefix</span> 查看前缀<span class="params">()</span> <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetPrefix</span><span class="params">(prefix <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
-<p>最后一个 <code>LstdFlags</code> 是日志前缀，大部分情况项目有很多业务，添加前缀可以区分这些业务：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">【UserCenter】<span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
-<h3 id="日志输出位置"><a href="#日志输出位置" class="headerlink" title="日志输出位置"></a>日志输出位置</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetOutput</span><span class="params">(w io.Writer)</span></span></span><br></pre></td></tr></table></figure>
-<p><code>SetOutput</code> 函数用来设置log的输出目的地</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	log.SetOutput(logFile)</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="创建logger"><a href="#创建logger" class="headerlink" title="创建logger"></a>创建logger</h3><p><code>log</code> 标准库中还提供一个 <code>logger</code> 对象的构造函数— <code>New</code> ，支持我们创建自己的 <code>logger</code> 实例。 <code>New</code> 函数签名如下：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(out io.Writer, prefix <span class="keyword">string</span>, flag <span class="keyword">int</span>)</span> *<span class="title">Logger</span></span></span><br></pre></td></tr></table></figure>
-<p>其中，<code>out</code> 设置日志信息写入的目的地。<code>prefix</code> 会添加到生成的每一条日志前面的前缀。<code>flag</code> 定义日志的属性（时间、文件等等）。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	logger := log.New(logFile, <span class="string">&quot;&quot;</span>, log.Ldate|log.Ltime|log.Llongfile)</span><br><span class="line">	logger.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章得帮助：</p>
+    <title>Go操作Redis</title>
+    <url>/2021/02/03/Go%E6%93%8D%E4%BD%9CRedis/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>本文记录Go中redis的使用</p>
+<h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p>Redis是一个开源的内存数据库，Redis提供了多种不同类型的数据结构，很多业务场景下的问题都可以很自然地映射到这些数据结构上。除此之外，通过复制、持久化和客户端分片等特性，我们可以很方便地将Redis扩展成一个能够包含数百GB数据、每秒处理上百万次请求的系统。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="感谢："><a href="#感谢：" class="headerlink" title="感谢："></a>感谢：</h2><p>感谢以下这些文章的帮助：</p>
 <blockquote>
-<p><a href="https://www.jianshu.com/p/d634316a9487">Go log 日志</a></p>
-<p><a href="https://www.liwenzhou.com/posts/Go/go_log/">Go语言标准库log介绍</a></p>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_redis/">Go语言操作Redis</a></p>
 </blockquote>
 ]]></content>
       <categories>
         <category>Go</category>
       </categories>
       <tags>
-        <tag>日志</tag>
+        <tag>redis</tag>
       </tags>
   </entry>
   <entry>
@@ -159,120 +117,45 @@
       </tags>
   </entry>
   <entry>
-    <title>Hexo搭建博客</title>
-    <url>/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为发现学习一些东西笔记东一点西一点，所以就想放在一个固定的地方，方便一点，找了一些资料，发现 github pages 和 hexo 可以免费搭建博客了（重点是免费），所以就试着搭建了一个，过程和一些坑都记录下。</p>
-<h2 id="Github-Pages"><a href="#Github-Pages" class="headerlink" title="Github Pages"></a>Github Pages</h2><p> GitHub Pages 是一个静态页面搭建托管服务，开搭。如果没有github账号去 <a href="https://github.com/">注册</a> 一个，注册了的</p>
-<p>就点击右上角的+号选择 New repository 来建立仓库。在（仓库名）repository name中必须填（重点）：username.github.io 必须是你的github账号名字+github+io。这是固定的格式，Description 是对仓库的说明可以写：xxx的博客，个人博客之类的。仓库选择公开，不公开不能使用github的pages功能，我已经踩过坑了。差不多就是下面这样：</p>
-<img src="https://i.loli.net/2021/02/07/rZUIma4Pji6bxGz.png" alt="image-20210117033559349" style="zoom:50%;">
-
-<p>然后来自己电脑上，我的电脑是win 10 的</p>
-<p>首先电脑上先安装Git，这是一个在GitHub上拉取资源和上传资源的工具，没有的可以自己在 <a href="https://git-scm.com/downloads">下载</a> 安装下，如果想了解安装的细节的话可以看看廖雪峰老师的 <a href="https://www.liaoxuefeng.com/wiki/896043488029600/896067074338496">Git安装教程</a></p>
-<img src="https://i.loli.net/2021/02/07/K7tqHxAV94e8iQF.png" alt="image-20210117033808505" style="zoom:50%;">
-
-<p>鼠标右键打开Git Bash Here ，或者在菜单栏搜索Git Bash打开也可以，设置user.name和user.email配置：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;你的GitHub用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
-<p>生成ssh密钥连接本地和GitHub：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
-<p>然后打开在 C:\Users\Administrator.ssh 文件夹中的 id_rsa.pub，复制全部内容，登录GitHub，点击右上角人物头像点击settings设置界面，</p>
-<img src="https://i.loli.net/2021/02/07/MAmvdqBiGepOZPj.png" alt="image-20210117033957541.png" style="zoom:40%;">
-
-<p>然后选择SSH这个，再点击New SSH key加上密钥，写上这个密钥的说明，例如：家里的笔记本，台式电脑等，不然密钥多了你会不知道哪个是哪个，复制的内容贴在下面框里就好了，然后点击Add SSH key就好了。</p>
-<img src="https://i.loli.net/2021/02/07/6OWHEg9N57Kiv4k.png" alt="image-20210117034216610" style="zoom:50%;">
-
-<p>在Git Bash中检查是否设置密钥成功, 输入<code>ssh git@github.com </code>，如下图就说明成功了。</p>
-<p><img src="https://i.loli.net/2021/02/07/Ohvxuk8ZpGJqSU9.png" alt="image-20210117034437859"></p>
-<h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>hexo基于node，<a href="https://nodejs.org/en/download/">下载安装</a> node安装包，node包含npm，默认安装好后检查是否安装成功，在Git Bash输入（记得关掉重启下Bash，不然不生效）：node -v ，npm -v</p>
-<p><img src="https://i.loli.net/2021/02/07/WTNMtkHZFpl4SOJ.png" alt="image-20210117034630578"></p>
-<p>到这里安装hexo的环境都搭建好了</p>
-<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>​        在电脑里面创建一个一个文件夹，可以命名为Blog之类的，我们的Hexo项目都放这个文件里面。进入文件夹，右键打开Git Bash，这样我们启动Bash后就直接在Blog文件下了</p>
-<img src="https://i.loli.net/2021/02/07/CWUg7wObeqkanT3.png" alt="20210117221924" style="zoom:50%;">
-
-<p>打开后是这样的：</p>
-<img src="https://i.loli.net/2021/02/07/sp8hx3gXJuI4m2t.png" alt="20210117020241448" style="zoom:50%;">
-
-<p>用npm安装hexo, </p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install -g hexo-cli # 注意在Blog文件夹中输入，安装后输入hexo -v报错：Cannot find module &#x27;hexo&#x27; from &#x27;&#x27;的话使用下面这条命令</span><br><span class="line">npm install hexo-util --save # 上面安装没报错的话不用这条命令</span><br></pre></td></tr></table></figure>
-<p>注意：我这里报错提示：系统禁止运行脚本，如果你没有的话跳过这步</p>
-<img src="https://i.loli.net/2021/02/07/hKuEgZAHzvS3QVq.png" alt="image-20210118180357726" style="zoom:40%;">
-
-<p>然后点击左边的开发者选择，右边下滑找到PowerShell，勾选允许本地运行PowerShell脚本，点击应用，然后把输入界面重新打开一下，让设置生效就行了</p>
-<img src="https://i.loli.net/2021/02/07/XCnHIeOpKA3mjtb.png" alt="image-20210118180450626" style="zoom:40%;">
+    <title>Go日志</title>
+    <url>/2021/02/02/Go%E6%97%A5%E5%BF%97/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>记录Go日志操作</p>
+<h2 id="标准log库"><a href="#标准log库" class="headerlink" title="标准log库"></a>标准log库</h2><h3 id="log输出"><a href="#log输出" class="headerlink" title="log输出"></a>log输出</h3><p>Go有 <code>fmt.Print</code> 输出，但是使用 <code>log.Print</code> 得话输出自带时间，可以更好帮我们找到出现问题得时间：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">11</span>:<span class="number">54</span>:<span class="number">25</span> hello world</span><br></pre></td></tr></table></figure>
+<h3 id="定制log输出"><a href="#定制log输出" class="headerlink" title="定制log输出"></a>定制log输出</h3><p>有了时间，但是我们还想要更多得信息，发生得源代码行号等等，对此 <code>log</code> 提供了可定制化配置，可以定制日志的抬头信息</p>
+<p>可以定义的选项：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Ldate         = <span class="number">1</span> &lt;&lt; <span class="literal">iota</span>     <span class="comment">//日期示例： 2009/01/23</span></span><br><span class="line">    Ltime                         <span class="comment">//时间示例: 01:23:23</span></span><br><span class="line">    Lmicroseconds                 <span class="comment">//毫秒示例: 01:23:23.123123.</span></span><br><span class="line">    Llongfile                     <span class="comment">//绝对路径和行号: /a/b/c/d.go:23</span></span><br><span class="line">    Lshortfile                    <span class="comment">//文件和行号: d.go:23.</span></span><br><span class="line">    LUTC                          <span class="comment">//日期时间转为0时区的</span></span><br><span class="line">    LstdFlags     = Ldate | Ltime <span class="comment">//Go提供的标准抬头信息</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>现在定制：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
+<h3 id="日志前缀"><a href="#日志前缀" class="headerlink" title="日志前缀"></a>日志前缀</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Prefix 查看前缀</span></span><br><span class="line"><span class="comment">// SetPrefix 设置前缀</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Prefix</span> 查看前缀<span class="params">()</span> <span class="title">string</span></span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetPrefix</span><span class="params">(prefix <span class="keyword">string</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p>最后一个 <code>LstdFlags</code> 是日志前缀，大部分情况项目有很多业务，添加前缀可以区分这些业务：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">【UserCenter】<span class="number">2021</span>/<span class="number">02</span>/<span class="number">02</span> <span class="number">14</span>:<span class="number">20</span>:<span class="number">35</span> .../main.<span class="keyword">go</span>:<span class="number">7</span>: hello world</span><br></pre></td></tr></table></figure>
+<h3 id="日志输出位置"><a href="#日志输出位置" class="headerlink" title="日志输出位置"></a>日志输出位置</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetOutput</span><span class="params">(w io.Writer)</span></span></span><br></pre></td></tr></table></figure>
+<p><code>SetOutput</code> 函数用来设置log的输出目的地</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">	log.SetOutput(logFile)</span><br><span class="line">	log.SetPrefix(<span class="string">&quot;【UserCenter】&quot;</span>)</span><br><span class="line">	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)</span><br><span class="line">	log.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="创建logger"><a href="#创建logger" class="headerlink" title="创建logger"></a>创建logger</h3><p><code>log</code> 标准库中还提供一个 <code>logger</code> 对象的构造函数— <code>New</code> ，支持我们创建自己的 <code>logger</code> 实例。 <code>New</code> 函数签名如下：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(out io.Writer, prefix <span class="keyword">string</span>, flag <span class="keyword">int</span>)</span> *<span class="title">Logger</span></span></span><br></pre></td></tr></table></figure>
+<p>其中，<code>out</code> 设置日志信息写入的目的地。<code>prefix</code> 会添加到生成的每一条日志前面的前缀。<code>flag</code> 定义日志的属性（时间、文件等等）。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 打开一个文件，返回logFile实例</span></span><br><span class="line">	logFile, err := os.OpenFile(<span class="string">&quot;./xx.log&quot;</span>, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.ModePerm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;open file failed, err:&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	logger := log.New(logFile, <span class="string">&quot;&quot;</span>, log.Ldate|log.Ltime|log.Llongfile)</span><br><span class="line">	logger.Println(<span class="string">&quot;hello world&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-
-<p>好了后就可以初始化我们的博客了</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo init # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
-<p>好了以后就可以启动hexo服务了</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo g #生产静态页面，默认是4000端口，如果被占可以指定，如：hexo server -p 5000</span><br><span class="line">hexo s #本地启动hexo服务</span><br></pre></td></tr></table></figure>
-<p>然后在网址上输入localhost:4000（端口号如果改了的话这里也要改）就可以看到了自己的博客了，到这里博客在本地就搭建好了，但是只能现在这台电脑看的到，所以要用GitHub托管，让其他电脑也看的到</p>
-<h2 id="Github-管理博客"><a href="#Github-管理博客" class="headerlink" title="Github 管理博客"></a>Github 管理博客</h2><h3 id="项目上传GitHub"><a href="#项目上传GitHub" class="headerlink" title="项目上传GitHub"></a>项目上传GitHub</h3><p>​        GitHub主线用来放博客项目，用来以后换电脑后可以拉取项目直接写博客，不用重新在本地一点一点搭建，服务托管在分支</p>
-<p>打开Blog文件夹里面的_config.yml文件。翻到最后</p>
-<ol>
-<li>type后面填git</li>
-<li>repo后面填仓库地址</li>
-<li>branch后面填分支名字</li>
-</ol>
-<p><img src="https://i.loli.net/2021/02/07/S8QMeYUu3IXmTjg.png" alt="image-20210117021949987"></p>
-<p>在Git Bash中下载git</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
-<p>安装好就把准备好的项目上传GitHub主线</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone &#x27;GitHub项目地址&#x27; # 复制GitHub项目到本地，本地会有个与GitHub项目名文件</span><br></pre></td></tr></table></figure>
-<img src="https://i.loli.net/2021/02/07/ce4AXr6ShBjzURY.png" alt="image-20210118181529871" style="zoom:80%;">
-
-<p>然后把搭建的博客项目上传到GitHub上去</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git add * # 新增文件放入提交缓存中</span><br><span class="line">git commit  -m  &quot;提交说明&quot; # 就是对这次提交的说明</span><br><span class="line">git push -u origin main # 本地项目提交到GitHub主线上，GitHub上会少几个文件，不过不要紧</span><br></pre></td></tr></table></figure>
-<p>好了之后GitHub上面就有项目了，以后换电脑就拉取项目直接写博客就行了</p>
-<h3 id="GitHub托管博客"><a href="#GitHub托管博客" class="headerlink" title="GitHub托管博客"></a>GitHub托管博客</h3><p>博客部署到GitHub上了</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这是hexo g,hexo d的简写，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d 项目部署到GitHub，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 文件修改后要先生成文件，再部署，也就是要先hexo g，后hexo d</span></span><br><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
-<p>推送完在去GitHub项目中设置Pages功能，先登录GitHub，进去博客项目，点击右边的Settings</p>
-<img src="https://i.loli.net/2021/02/07/vfHaS6hdEtlUMzc.png" alt="image-20210118172021785" style="zoom:50%;">
-
-<p>下滑找到GitHub Pages，把branch设置成我们在_config.yml上写的分支名字。</p>
-<img src="https://i.loli.net/2021/02/07/kHDugOBtViEz4xM.png" alt="image-20210118172312679" style="zoom:50%;">
-
-<p>好了，打开你的 username.github.io 看看吧</p>
-<h4 id="hexo命令："><a href="#hexo命令：" class="headerlink" title="hexo命令："></a>hexo命令：</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo n &quot;博客&quot;			# 新建博客文章，在Blog\source\_posts文件夹中</span><br><span class="line">hexo g 				 # 生成静态页面</span><br><span class="line">hexo s 			 	 # 本地启动hexo服务</span><br><span class="line">hexo d 				 # 推送到GitHub</span><br><span class="line"></span><br><span class="line">hexo server -p 5000  # 指定端口</span><br><span class="line">hexo clean 			 # 清理缓存，若是网页正常情况下可以忽略这条命令</span><br></pre></td></tr></table></figure>
-<h4 id="博客网址标题等修改"><a href="#博客网址标题等修改" class="headerlink" title="博客网址标题等修改"></a><a href="https://hexo.io/zh-cn/docs/configuration">博客网址标题等修改</a></h4><h4 id="博客添加图片"><a href="#博客添加图片" class="headerlink" title="博客添加图片"></a>博客添加图片</h4><h5 id="使用图片插件"><a href="#使用图片插件" class="headerlink" title="使用图片插件"></a>使用图片插件</h5><p>先去项目中_config.yml文件中把post_asset_folder这个选择设为true</p>
-<p><img src="https://i.loli.net/2021/02/07/7bgI3kDfFXp19EV.png" alt="image-20210120163629843"></p>
-<p>然后在blog文件夹中下载插件：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-asset-image --save</span><br></pre></td></tr></table></figure>
-<p>安装好了以后，在用 hexo n “xxx” 新建博客时，在/source/_posts文件中除了会有 xxx.md的博客文件还会有一个与博客同名文件夹，博客图片保存在同名文件夹内，使用时在xxxx.md中按照markdown的格式引入图片</p>
-<ul>
-<li><strong>编辑器写博客</strong></li>
-</ul>
-<p>在需要图片的地方使用下面这两种方法都行，下面那个就是可以缩小图片，style里面那个就是说图片缩小50%后再显示。</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![<span class="string">描述</span>](<span class="link">xxx/图片名字.png</span>)</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;xxx/图片名字.png&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;图片无法显示时的替代信息&quot;</span> <span class="attr">style</span>=<span class="string">&quot;zoom:50%;&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>用Typora写博客</strong></li>
-</ul>
-<p>Typora有保存图片位置的设置，我们把图片保存地址设置为同位置的同名文件夹就行了</p>
-<p>点击左上角文件，下拉选项选偏好设置</p>
-<img src="https://i.loli.net/2021/02/07/GR1YQr3BeXA8xnc.png" alt="image-20210120165604892" style="zoom: 80%;">
-
-<p>左边点击图像，然后在插入图片地址处点击下拉，选择复制到指定路径</p>
-<p><img src="https://i.loli.net/2021/02/07/U8uI5d24oEb9mei.png" alt="image-20210120165805721"></p>
-<p>在下面输入框中输入：./${filename} 你截图粘贴的时候就会把图片直接保存在博客同位置的同名文件夹中了，下面这些图片设置选项前三个最好勾上，其他看需求是否需要。</p>
-<p><img src="https://i.loli.net/2021/02/07/euvxgd26LoCTJaO.png" alt="image-20210120165928154"></p>
-<p>好了，现在博客部署到GitHub上就会显示图片了。</p>
-<h3 id="更换博客主题"><a href="#更换博客主题" class="headerlink" title="更换博客主题"></a>更换博客主题</h3><p>将自己喜欢的主题下载到themes文件夹中，这里就是放主题的，我选的是<a href="https://github.com/theme-next/hexo-theme-next">next主题</a>，你也可以选其他喜欢的主题</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
-<p>修改_config.yml配置，把theme字段配置为新下载的主题：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
-<p>本地查看下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 清理缓存</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成静态页面</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 本地启动hexo服务</span></span><br><span class="line">hexo clean</span><br><span class="line">hexo g </span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
-<p>我看到<a href="https://github.com/jerryc127/hexo-theme-butterfly">butterfly主题</a>的时候又感觉这个好看，换了这个，主题设置可以参考 <a href="https://xiabor.com/">MuJin’s Blog</a> 大佬的博客</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载主题</span></span><br><span class="line">git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/Butterfly</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装主题依赖</span></span><br><span class="line">npm install hexo-renderer-pug hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure>
-<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><blockquote>
-<p>最后感觉这些文章的帮助：</p>
-<p><a href="https://blog.csdn.net/sinat_37781304/article/details/82729029">hexo史上最全搭建教程</a></p>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>感谢以下文章得帮助：</p>
+<blockquote>
+<p><a href="https://www.jianshu.com/p/d634316a9487">Go log 日志</a></p>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_log/">Go语言标准库log介绍</a></p>
 </blockquote>
 ]]></content>
       <categories>
-        <category>博客</category>
+        <category>Go</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
+        <tag>日志</tag>
       </tags>
   </entry>
   <entry>
@@ -402,6 +285,123 @@
       </categories>
       <tags>
         <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo搭建博客</title>
+    <url>/2021/01/17/Hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为发现学习一些东西笔记东一点西一点，所以就想放在一个固定的地方，方便一点，找了一些资料，发现 github pages 和 hexo 可以免费搭建博客了（重点是免费），所以就试着搭建了一个，过程和一些坑都记录下。</p>
+<h2 id="Github-Pages"><a href="#Github-Pages" class="headerlink" title="Github Pages"></a>Github Pages</h2><p> GitHub Pages 是一个静态页面搭建托管服务，开搭。如果没有github账号去 <a href="https://github.com/">注册</a> 一个，注册了的</p>
+<p>就点击右上角的+号选择 New repository 来建立仓库。在（仓库名）repository name中必须填（重点）：username.github.io 必须是你的github账号名字+github+io。这是固定的格式，Description 是对仓库的说明可以写：xxx的博客，个人博客之类的。仓库选择公开，不公开不能使用github的pages功能，我已经踩过坑了。差不多就是下面这样：</p>
+<img src="https://i.loli.net/2021/02/07/rZUIma4Pji6bxGz.png" alt="image-20210117033559349" style="zoom:50%;">
+
+<p>然后来自己电脑上，我的电脑是win 10 的</p>
+<p>首先电脑上先安装Git，这是一个在GitHub上拉取资源和上传资源的工具，没有的可以自己在 <a href="https://git-scm.com/downloads">下载</a> 安装下，如果想了解安装的细节的话可以看看廖雪峰老师的 <a href="https://www.liaoxuefeng.com/wiki/896043488029600/896067074338496">Git安装教程</a></p>
+<img src="https://i.loli.net/2021/02/07/K7tqHxAV94e8iQF.png" alt="image-20210117033808505" style="zoom:50%;">
+
+<p>鼠标右键打开Git Bash Here ，或者在菜单栏搜索Git Bash打开也可以，设置user.name和user.email配置：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;你的GitHub用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
+<p>生成ssh密钥连接本地和GitHub：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
+<p>然后打开在 C:\Users\Administrator.ssh 文件夹中的 id_rsa.pub，复制全部内容，登录GitHub，点击右上角人物头像点击settings设置界面，</p>
+<img src="https://i.loli.net/2021/02/07/MAmvdqBiGepOZPj.png" alt="image-20210117033957541.png" style="zoom:40%;">
+
+<p>然后选择SSH这个，再点击New SSH key加上密钥，写上这个密钥的说明，例如：家里的笔记本，台式电脑等，不然密钥多了你会不知道哪个是哪个，复制的内容贴在下面框里就好了，然后点击Add SSH key就好了。</p>
+<img src="https://i.loli.net/2021/02/07/6OWHEg9N57Kiv4k.png" alt="image-20210117034216610" style="zoom:50%;">
+
+<p>在Git Bash中检查是否设置密钥成功, 输入<code>ssh git@github.com </code>，如下图就说明成功了。</p>
+<p><img src="https://i.loli.net/2021/02/07/Ohvxuk8ZpGJqSU9.png" alt="image-20210117034437859"></p>
+<h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>hexo基于node，<a href="https://nodejs.org/en/download/">下载安装</a> node安装包，node包含npm，默认安装好后检查是否安装成功，在Git Bash输入（记得关掉重启下Bash，不然不生效）：node -v ，npm -v</p>
+<p><img src="https://i.loli.net/2021/02/07/WTNMtkHZFpl4SOJ.png" alt="image-20210117034630578"></p>
+<p>到这里安装hexo的环境都搭建好了</p>
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>​        在电脑里面创建一个一个文件夹，可以命名为Blog之类的，我们的Hexo项目都放这个文件里面。进入文件夹，右键打开Git Bash，这样我们启动Bash后就直接在Blog文件下了</p>
+<img src="https://i.loli.net/2021/02/07/CWUg7wObeqkanT3.png" alt="20210117221924" style="zoom:50%;">
+
+<p>打开后是这样的：</p>
+<img src="https://i.loli.net/2021/02/07/sp8hx3gXJuI4m2t.png" alt="20210117020241448" style="zoom:50%;">
+
+<p>用npm安装hexo, </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install -g hexo-cli # 注意在Blog文件夹中输入，安装后输入hexo -v报错：Cannot find module &#x27;hexo&#x27; from &#x27;&#x27;的话使用下面这条命令</span><br><span class="line">npm install hexo-util --save # 上面安装没报错的话不用这条命令</span><br></pre></td></tr></table></figure>
+<p>注意：我这里报错提示：系统禁止运行脚本，如果你没有的话跳过这步</p>
+<img src="https://i.loli.net/2021/02/07/hKuEgZAHzvS3QVq.png" alt="image-20210118180357726" style="zoom:40%;">
+
+<p>然后点击左边的开发者选择，右边下滑找到PowerShell，勾选允许本地运行PowerShell脚本，点击应用，然后把输入界面重新打开一下，让设置生效就行了</p>
+<img src="https://i.loli.net/2021/02/07/XCnHIeOpKA3mjtb.png" alt="image-20210118180450626" style="zoom:40%;">
+
+
+
+<p>好了后就可以初始化我们的博客了</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo init # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
+<p>好了以后就可以启动hexo服务了</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo g #生产静态页面，默认是4000端口，如果被占可以指定，如：hexo server -p 5000</span><br><span class="line">hexo s #本地启动hexo服务</span><br></pre></td></tr></table></figure>
+<p>然后在网址上输入localhost:4000（端口号如果改了的话这里也要改）就可以看到了自己的博客了，到这里博客在本地就搭建好了，但是只能现在这台电脑看的到，所以要用GitHub托管，让其他电脑也看的到</p>
+<h2 id="Github-管理博客"><a href="#Github-管理博客" class="headerlink" title="Github 管理博客"></a>Github 管理博客</h2><h3 id="项目上传GitHub"><a href="#项目上传GitHub" class="headerlink" title="项目上传GitHub"></a>项目上传GitHub</h3><p>​        GitHub主线用来放博客项目，用来以后换电脑后可以拉取项目直接写博客，不用重新在本地一点一点搭建，服务托管在分支</p>
+<p>打开Blog文件夹里面的_config.yml文件。翻到最后</p>
+<ol>
+<li>type后面填git</li>
+<li>repo后面填仓库地址</li>
+<li>branch后面填分支名字</li>
+</ol>
+<p><img src="https://i.loli.net/2021/02/07/S8QMeYUu3IXmTjg.png" alt="image-20210117021949987"></p>
+<p>在Git Bash中下载git</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save # 注意在Blog文件夹中输入</span><br></pre></td></tr></table></figure>
+<p>安装好就把准备好的项目上传GitHub主线</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone &#x27;GitHub项目地址&#x27; # 复制GitHub项目到本地，本地会有个与GitHub项目名文件</span><br></pre></td></tr></table></figure>
+<img src="https://i.loli.net/2021/02/07/ce4AXr6ShBjzURY.png" alt="image-20210118181529871" style="zoom:80%;">
+
+<p>然后把搭建的博客项目上传到GitHub上去</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git add * # 新增文件放入提交缓存中</span><br><span class="line">git commit  -m  &quot;提交说明&quot; # 就是对这次提交的说明</span><br><span class="line">git push -u origin main # 本地项目提交到GitHub主线上，GitHub上会少几个文件，不过不要紧</span><br></pre></td></tr></table></figure>
+<p>好了之后GitHub上面就有项目了，以后换电脑就拉取项目直接写博客就行了</p>
+<h3 id="GitHub托管博客"><a href="#GitHub托管博客" class="headerlink" title="GitHub托管博客"></a>GitHub托管博客</h3><p>博客部署到GitHub上了</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这是hexo g,hexo d的简写，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> hexo d 项目部署到GitHub，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 文件修改后要先生成文件，再部署，也就是要先hexo g，后hexo d</span></span><br><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
+<p>推送完在去GitHub项目中设置Pages功能，先登录GitHub，进去博客项目，点击右边的Settings</p>
+<img src="https://i.loli.net/2021/02/07/vfHaS6hdEtlUMzc.png" alt="image-20210118172021785" style="zoom:50%;">
+
+<p>下滑找到GitHub Pages，把branch设置成我们在_config.yml上写的分支名字。</p>
+<img src="https://i.loli.net/2021/02/07/kHDugOBtViEz4xM.png" alt="image-20210118172312679" style="zoom:50%;">
+
+<p>好了，打开你的 username.github.io 看看吧</p>
+<h4 id="hexo命令："><a href="#hexo命令：" class="headerlink" title="hexo命令："></a>hexo命令：</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo n &quot;博客&quot;			# 新建博客文章，在Blog\source\_posts文件夹中</span><br><span class="line">hexo g 				 # 生成静态页面</span><br><span class="line">hexo s 			 	 # 本地启动hexo服务</span><br><span class="line">hexo d 				 # 推送到GitHub</span><br><span class="line"></span><br><span class="line">hexo server -p 5000  # 指定端口</span><br><span class="line">hexo clean 			 # 清理缓存，若是网页正常情况下可以忽略这条命令</span><br></pre></td></tr></table></figure>
+<h4 id="博客网址标题等修改"><a href="#博客网址标题等修改" class="headerlink" title="博客网址标题等修改"></a><a href="https://hexo.io/zh-cn/docs/configuration">博客网址标题等修改</a></h4><h4 id="博客添加图片"><a href="#博客添加图片" class="headerlink" title="博客添加图片"></a>博客添加图片</h4><h5 id="使用图片插件"><a href="#使用图片插件" class="headerlink" title="使用图片插件"></a>使用图片插件</h5><p>先去项目中_config.yml文件中把post_asset_folder这个选择设为true</p>
+<p><img src="https://i.loli.net/2021/02/07/7bgI3kDfFXp19EV.png" alt="image-20210120163629843"></p>
+<p>然后在blog文件夹中下载插件：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-asset-image --save</span><br></pre></td></tr></table></figure>
+<p>安装好了以后，在用 hexo n “xxx” 新建博客时，在/source/_posts文件中除了会有 xxx.md的博客文件还会有一个与博客同名文件夹，博客图片保存在同名文件夹内，使用时在xxxx.md中按照markdown的格式引入图片</p>
+<ul>
+<li><strong>编辑器写博客</strong></li>
+</ul>
+<p>在需要图片的地方使用下面这两种方法都行，下面那个就是可以缩小图片，style里面那个就是说图片缩小50%后再显示。</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">![<span class="string">描述</span>](<span class="link">xxx/图片名字.png</span>)</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;xxx/图片名字.png&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;图片无法显示时的替代信息&quot;</span> <span class="attr">style</span>=<span class="string">&quot;zoom:50%;&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>用Typora写博客</strong></li>
+</ul>
+<p>Typora有保存图片位置的设置，我们把图片保存地址设置为同位置的同名文件夹就行了</p>
+<p>点击左上角文件，下拉选项选偏好设置</p>
+<img src="https://i.loli.net/2021/02/07/GR1YQr3BeXA8xnc.png" alt="image-20210120165604892" style="zoom: 80%;">
+
+<p>左边点击图像，然后在插入图片地址处点击下拉，选择复制到指定路径</p>
+<p><img src="https://i.loli.net/2021/02/07/U8uI5d24oEb9mei.png" alt="image-20210120165805721"></p>
+<p>在下面输入框中输入：./${filename} 你截图粘贴的时候就会把图片直接保存在博客同位置的同名文件夹中了，下面这些图片设置选项前三个最好勾上，其他看需求是否需要。</p>
+<p><img src="https://i.loli.net/2021/02/07/euvxgd26LoCTJaO.png" alt="image-20210120165928154"></p>
+<p>好了，现在博客部署到GitHub上就会显示图片了。</p>
+<h3 id="更换博客主题"><a href="#更换博客主题" class="headerlink" title="更换博客主题"></a>更换博客主题</h3><p>将自己喜欢的主题下载到themes文件夹中，这里就是放主题的，我选的是<a href="https://github.com/theme-next/hexo-theme-next">next主题</a>，你也可以选其他喜欢的主题</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<p>修改_config.yml配置，把theme字段配置为新下载的主题：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
+<p>本地查看下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 清理缓存</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成静态页面</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 本地启动hexo服务</span></span><br><span class="line">hexo clean</span><br><span class="line">hexo g </span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<p>我看到<a href="https://github.com/jerryc127/hexo-theme-butterfly">butterfly主题</a>的时候又感觉这个好看，换了这个，主题设置可以参考 <a href="https://xiabor.com/">MuJin’s Blog</a> 大佬的博客</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 下载主题</span></span><br><span class="line">git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/Butterfly</span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装主题依赖</span></span><br><span class="line">npm install hexo-renderer-pug hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><blockquote>
+<p>最后感觉这些文章的帮助：</p>
+<p><a href="https://blog.csdn.net/sinat_37781304/article/details/82729029">hexo史上最全搭建教程</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
       </tags>
   </entry>
 </search>
